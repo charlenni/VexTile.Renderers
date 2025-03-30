@@ -33,7 +33,7 @@ public class MapboxTileReader : IVectorTileReader
         if (IsGZipped(data))
             stream = new GZipStream(stream, CompressionMode.Decompress);
 
-        return _tileReader.Read(stream, tile);
+        return _tileReader.Read(stream, tile,"id");
     }
 
     private static bool IsGZipped(byte[] data)
