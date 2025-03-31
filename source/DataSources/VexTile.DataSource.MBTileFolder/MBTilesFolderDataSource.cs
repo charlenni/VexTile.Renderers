@@ -1,16 +1,16 @@
 ﻿using NetTopologySuite.IO.VectorTiles.Tiles;
 using VexTile.Common.Sources;
 
-namespace VexTile.DataSources.FileStructure;
+namespace VexTile.DataSource.MBTilesFolder;
 
-public class FileDataSource : IDataSource
+public class MBTilesFolderDataSource : IDataSource
 {
-    public FileDataSource(string path = ".\\")
+    public MBTilesFolderDataSource(string path = ".\\")
     {
         Path = path;
     }
 
-    public string Path { get; init; } = "";
+    public string Path { get; }
 
     public async Task<byte[]?> GetTileAsync(Tile tile)
     {
@@ -22,6 +22,10 @@ public class FileDataSource : IDataSource
         if (!File.Exists(qualifiedPath))
             return null;
 
-        return await File.ReadAllBytesAsync(qualifiedPath);
+        byte[]? result = null;
+
+        await new Task(() => new Task(() => File.ReadAllBytes(qualifiedPath)).RunSynchronously());
+
+        return result;
     }
 }
