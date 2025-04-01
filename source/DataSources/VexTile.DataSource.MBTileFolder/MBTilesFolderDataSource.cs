@@ -1,5 +1,5 @@
 ﻿using NetTopologySuite.IO.VectorTiles.Tiles;
-using VexTile.Common.Sources;
+using VexTile.Common.Interfaces;
 
 namespace VexTile.DataSource.MBTilesFolder;
 
