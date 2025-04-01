@@ -9,7 +9,7 @@
     <PackageVersion Include="BruTile.MbTiles" Version="5.0.6" />
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="Mapsui" Version="5.0.0-beta.11" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageVersion Include="NetTopologySuite.IO.VectorTiles" Version="1.1.0" />
     <PackageVersion Include="NetTopologySuite.IO.VectorTiles.Mapbox" Version="1.1.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
@@ -25,7 +25,7 @@
     <PackageVersion Include="VexTile.Mapbox.VectorTile.Geometry" Version="1.0.6" />
     <PackageVersion Include="VexTile.Mapbox.VectorTile.PbfReader" Version="1.0.6" />
     <PackageVersion Include="VexTile.Mapbox.VectorTile.VectorTileReader" Version="1.0.6" />
-    <PackageVersion Include="xunit" Version="2.5.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
   </ItemGroup>
 </Project>
