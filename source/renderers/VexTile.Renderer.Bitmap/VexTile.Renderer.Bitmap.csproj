@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\converters\VexTile.Converter.Mapbox\VexTile.Converter.Mapbox.csproj" />
+    <ProjectReference Include="..\..\DataSources\VexTile.DataSource.MBTilesSQLite\VexTile.DataSource.MBTilesSQLite.csproj" />
+    <ProjectReference Include="..\..\Styles\VexTile.Style.Mapbox\VexTile.Style.Mapbox.csproj" />
+    <ProjectReference Include="..\..\VexTile.Common\VexTile.Common.csproj" />
+  </ItemGroup>
+
+</Project>
