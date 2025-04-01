@@ -3,7 +3,7 @@ using BruTile.Predefined;
 using NetTopologySuite.IO.VectorTiles.Tiles;
 using SQLite;
 using System.Globalization;
-using VexTile.Common.Sources;
+using VexTile.Common.Interfaces;
 using VexTile.DataSource.MBTilesSQLite.Tables;
 
 namespace VexTile.DataSource.MBTilesSQLite;
