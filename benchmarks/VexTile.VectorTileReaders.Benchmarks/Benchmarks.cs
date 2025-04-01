@@ -1,8 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
 using NetTopologySuite.IO.VectorTiles.Tiles;
-using VexTile.Common.Sources;
 using VexTile.DataSource.MBTilesSQLite;
 using VexTile.Converter.Mapbox;
+using VexTile.Common.Interfaces;
 
 namespace VexTile.VectorTileReaders.Benchmarks
 {
@@ -11,7 +11,7 @@ namespace VexTile.VectorTileReaders.Benchmarks
     {
         readonly string _path = "..\\..\\..\\..\\..\\..\\..\\..\\..\\tiles\\zurich.mbtiles";
 
-        IVectorTileConverter? _tileConverter;
+        ITileConverter? _tileConverter;
         List<Tile> _tiles = new List<Tile> { new Tile(134, 166, 8), new Tile(8580, 10645, 14), new Tile(8581, 10645, 14), new Tile(8580, 10644, 14) };
         List<byte[]?> _data = new List<byte[]?>();
 
@@ -33,7 +33,7 @@ namespace VexTile.VectorTileReaders.Benchmarks
         [Arguments(3)]
         public void ReadVectorTile(int i)
         {
-            _tileConverter?.ConvertToVectorTile(_tiles[i], _data[i])
+            _tileConverter?.Convert(_tiles[i], _data[i])
                 .ConfigureAwait(false)
                 .GetAwaiter()
                 .GetResult();
@@ -43,7 +43,7 @@ namespace VexTile.VectorTileReaders.Benchmarks
         public void ReadVectorTiles()
         {
             for (var i = 0; i < _tiles.Count(); i++)
-                _tileConverter?.ConvertToVectorTile(_tiles[i], _data[i])
+                _tileConverter?.Convert(_tiles[i], _data[i])
                     .ConfigureAwait(false)
                     .GetAwaiter()
                     .GetResult();
