@@ -1,10 +1,10 @@
 ﻿using NetTopologySuite.IO.VectorTiles;
 using System.IO.Compression;
-using VexTile.Common.Sources;
+using VexTile.Common.Interfaces;
 
 namespace VexTile.Converter.Mapbox;
 
-public class MapboxTileConverter : IVectorTileConverter
+public class MapboxTileConverter : ITileConverter
 {
     private NetTopologySuite.IO.VectorTiles.Mapbox.MapboxTileReader _tileConverter;
     private IDataSource _dataSource;
@@ -15,7 +15,7 @@ public class MapboxTileConverter : IVectorTileConverter
         _tileConverter = new NetTopologySuite.IO.VectorTiles.Mapbox.MapboxTileReader();
     }
 
-    public async Task<VectorTile?> ConvertToVectorTile(NetTopologySuite.IO.VectorTiles.Tiles.Tile tile, byte[]? data = null)
+    public async Task<VectorTile?> Convert(NetTopologySuite.IO.VectorTiles.Tiles.Tile tile, byte[]? data = null)
     {
         if (_dataSource == null)
             return new VectorTile();
