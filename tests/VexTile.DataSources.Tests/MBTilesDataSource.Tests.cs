@@ -6,7 +6,7 @@ namespace VexTile.DataSource.Tests;
 
 public class MBTilesDataSourceTests
 {
-    readonly string _path = "..\\..\\..\\..\\..\\tiles\\zurich.mbtiles";
+    readonly string _path = "..\\..\\..\\..\\..\\tests\\files\\zurich.mbtiles";
 
     [Fact]
     public void CheckMetaDataTest()

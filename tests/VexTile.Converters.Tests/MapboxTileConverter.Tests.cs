@@ -6,10 +6,10 @@ namespace VexTile.Readers.Tests
 {
     public class MapboxConverterTests
     {
-        readonly string _path = "..\\..\\..\\..\\..\\tiles\\zurich.mbtiles";
+        readonly string _path = "..\\..\\..\\..\\..\\tests\\files\\zurich.mbtiles";
 
         [Fact]
-        public async void VectorTileConverterTest()
+        public async Task VectorTileConverterTest()
         {
             var dataSource = new MBTilesSQLiteDataSource(_path, determineZoomLevelsFromTilesTable: true, determineTileRangeFromTilesTable: true);
 
@@ -17,7 +17,7 @@ namespace VexTile.Readers.Tests
 
             var tileConverter = new MapboxTileConverter(dataSource);
 
-            var vectorTile = await tileConverter.ConvertToVectorTile(new NetTopologySuite.IO.VectorTiles.Tiles.Tile(8580, 10645, 14));
+            var vectorTile = await tileConverter.Convert(new NetTopologySuite.IO.VectorTiles.Tiles.Tile(8580, 10645, 14));
 
             Assert.NotNull(vectorTile);
             Assert.True(vectorTile.TileId == 263894745);
