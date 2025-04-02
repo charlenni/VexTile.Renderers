@@ -3,12 +3,14 @@ using NetTopologySuite.IO.VectorTiles.Tiles;
 using SkiaSharp;
 using VexTile.Common.Enums;
 using VexTile.Common.Interfaces;
+using VexTile.Common.Primitives;
+using VexTile.Renderer.Common.Interfaces;
 
 namespace VexTile.Renderer.Bitmap;
 
 public class Renderer
 {
-    public static async Task<SKBitmap> Render(Tile tile, IEnumerable<ITileSource> sources, IEnumerable<ITileStyle> styles)
+    public static async Task<SKBitmap> Render(Tile tile, IEnumerable<ITileSource> sources, IEnumerable<ITileStyle> styles, IPaintFactory paintFactory)
     {
         var bitmap = new SKBitmap(512, 512);
         var canvas = new SKCanvas(bitmap);
@@ -34,6 +36,8 @@ public class Renderer
             }
         }
 
+        var context = new EvaluationContext(tile.Zoom);
+
         // Draw tiles data style after style
         foreach (var style in styles)
         {
@@ -43,15 +47,15 @@ public class Renderer
             switch (style.Type)
             {
                 case "background":
-                    RenderAsBackground(canvas, style);
+                    RenderAsBackground(canvas, context, style, paintFactory);
                     break;
                 case "raster":
-                    RenderTileAsRaster(canvas, (byte[])tiles[style.Source], style);
+                    RenderTileAsRaster(canvas, context, (byte[])tiles[style.Source], style, paintFactory);
                     break;
                 case "fill":
                 case "line":
                     if (tiles[style.Source] != null)
-                        RenderTileAsVector(canvas, (VectorTile)tiles[style.Source], style);
+                        RenderTileAsVector(canvas, context, (VectorTile)tiles[style.Source], style, paintFactory);
                     break;
                 default:
                     throw new NotImplementedException($"Style.Type '{style.Type}' is unknown");
@@ -69,17 +73,17 @@ public class Renderer
         return bitmap;
     }
 
-    private static void RenderAsBackground(SKCanvas canvas, ITileStyle style)
+    private static void RenderAsBackground(SKCanvas canvas, EvaluationContext context, ITileStyle style, IPaintFactory paintFactory)
     {
-
+        var paints = paintFactory.CreateOrUpdatePaint(style, context);
     }
 
-    private static void RenderTileAsRaster(SKCanvas canvas, byte[] data, ITileStyle style)
+    private static void RenderTileAsRaster(SKCanvas canvas, EvaluationContext context, byte[] data, ITileStyle style, IPaintFactory paintFactory)
     {
-
+        var paints = paintFactory.CreateOrUpdatePaint(style, context);
     }
 
-    private static void RenderTileAsVector(SKCanvas canvas, VectorTile data, ITileStyle style)
+    private static void RenderTileAsVector(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaintFactory paintFactory)
     {
         var features = data.Layers.Where(l => l.Name == style.SourceLayer)
             .First()
@@ -89,12 +93,14 @@ public class Renderer
         if (features == null || features.Count() == 0)
             return;
 
+        var paints = paintFactory.CreateOrUpdatePaint(style, context);
+
         // Draw features that belong to this style
         foreach (var feature in features)
         {
-            foreach (var paint in style.Paints)
+            foreach (var paint in paints)
             {
-                canvas.DrawPath(feature.ToSKPath(), paint.ToSKPaint());
+                canvas.DrawPath(feature.ToSKPath(), paint);
             }
         }
     }
