@@ -67,6 +67,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{E17E3474
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Renderer.Bitmap", "source\renderers\VexTile.Renderer.Bitmap\VexTile.Renderer.Bitmap.csproj", "{A6F8EBB8-E32A-4158-88D6-4BDEA82942EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Renderer.Mapbox", "source\renderers\VexTile.Renderer.Mapbox\VexTile.Renderer.Mapbox.csproj", "{C6A33F35-CBD6-4276-B4C9-E20AA17A715A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Renderer.Common", "source\renderers\VexTile.Renderer.Common\VexTile.Renderer.Common.csproj", "{A8404487-BF54-4FC0-BFB7-3CDD100586B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +129,14 @@ Global
 		{A6F8EBB8-E32A-4158-88D6-4BDEA82942EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6F8EBB8-E32A-4158-88D6-4BDEA82942EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6F8EBB8-E32A-4158-88D6-4BDEA82942EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6A33F35-CBD6-4276-B4C9-E20AA17A715A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6A33F35-CBD6-4276-B4C9-E20AA17A715A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6A33F35-CBD6-4276-B4C9-E20AA17A715A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6A33F35-CBD6-4276-B4C9-E20AA17A715A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8404487-BF54-4FC0-BFB7-3CDD100586B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8404487-BF54-4FC0-BFB7-3CDD100586B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8404487-BF54-4FC0-BFB7-3CDD100586B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8404487-BF54-4FC0-BFB7-3CDD100586B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -145,6 +157,8 @@ Global
 		{48289251-046A-45A0-9573-AF3E447379A6} = {60740B31-4437-4B25-B266-E08E9CB793C2}
 		{E17E3474-EF41-4AC6-9AA8-56F5D5A23B7B} = {60740B31-4437-4B25-B266-E08E9CB793C2}
 		{A6F8EBB8-E32A-4158-88D6-4BDEA82942EB} = {E18861F9-FDA0-45AE-92FD-CA6FB4A02E36}
+		{C6A33F35-CBD6-4276-B4C9-E20AA17A715A} = {E18861F9-FDA0-45AE-92FD-CA6FB4A02E36}
+		{A8404487-BF54-4FC0-BFB7-3CDD100586B0} = {E18861F9-FDA0-45AE-92FD-CA6FB4A02E36}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B7E5C58-5DE8-4E43-BADC-70CFCD54D996}
