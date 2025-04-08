@@ -1,5 +1,5 @@
 ﻿using NetTopologySuite.IO.VectorTiles.Tiles;
-using VexTile.DataSource.MBTilesSQLite;
+using VexTile.TileDataSource.MbTilesTileDataSource;
 using Xunit;
 
 namespace VexTile.DataSource.Tests;
@@ -11,7 +11,7 @@ public class MBTilesDataSourceTests
     [Fact]
     public void CheckMetaDataTest()
     {
-        var dataSource = new MBTilesSQLiteDataSource(_path, determineZoomLevelsFromTilesTable: true, determineTileRangeFromTilesTable: true);
+        var dataSource = new MbTilesTileDataSource(_path, determineZoomLevelsFromTilesTable: true, determineTileRangeFromTilesTable: true);
 
         Assert.True(dataSource.Name == "OpenMapTiles");
         Assert.True(dataSource.Description == "Extract from https://openmaptiles.org");
@@ -24,7 +24,7 @@ public class MBTilesDataSourceTests
     [Fact]
     public async Task CheckTileDataTest()
     {
-        var dataSource = new MBTilesSQLiteDataSource(_path, determineZoomLevelsFromTilesTable: true, determineTileRangeFromTilesTable: true);
+        var dataSource = new MbTilesTileDataSource(_path, determineZoomLevelsFromTilesTable: true, determineTileRangeFromTilesTable: true);
 
         var tileData = await dataSource.GetTileAsync(new Tile(8580, 10645, 14));
 

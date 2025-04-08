@@ -1,8 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
 using NetTopologySuite.IO.VectorTiles.Tiles;
-using VexTile.DataSource.MBTilesSQLite;
-using VexTile.Converter.Mapbox;
 using VexTile.Common.Interfaces;
+using VexTile.TileConverter.Mapbox;
+using VexTile.TileDataSource.MbTilesTileDataSource;
 
 namespace VexTile.VectorTileReaders.Benchmarks
 {
@@ -18,7 +18,7 @@ namespace VexTile.VectorTileReaders.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            var dataSource = new MBTilesSQLiteDataSource(_path);
+            var dataSource = new MbTilesTileDataSource(_path);
 
             _tileConverter = new MapboxTileConverter(dataSource);
 

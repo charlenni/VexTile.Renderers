@@ -8,7 +8,7 @@
   "sources": {
     "openmaptiles": {
       "type": "vector",
-      "url": "mbtiles://switzerland_zurich.mbtiles"
+      "url": "mbtiles://zurich.mbtiles"
     },
     "natural_earth_shaded_relief": {
       "maxzoom": 6,
@@ -19,7 +19,7 @@
       "type": "raster"
     }
   },
-  "sprite": "embedded://styles/sprites/osm-liberty",
+  "sprite": "embedded://sprites/osm-liberty",
   "glyphs": "https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf",
   "layers": [
     {

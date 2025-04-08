@@ -3,10 +3,13 @@ using VexTile.Common.Interfaces;
 
 namespace VexTile.DataSource.MBTilesFolder;
 
-public class MBTilesFolderDataSource : IDataSource
+public class MBTilesFolderDataSource : ITileDataSource
 {
-    public MBTilesFolderDataSource(string path = ".\\")
+    public MBTilesFolderDataSource(string path = "")
     {
+        if (path.Equals(""))
+            path = Directory.GetCurrentDirectory();
+
         Path = path;
     }
 

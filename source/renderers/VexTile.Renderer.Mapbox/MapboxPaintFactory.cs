@@ -1,27 +1,51 @@
 ﻿using SkiaSharp;
 using VexTile.Common.Interfaces;
-using VexTile.Common.Primitives;
 using VexTile.Renderer.Common.Interfaces;
+using VexTile.Style.Mapbox;
 
 namespace VexTile.Renderer.Mapbox
 {
     public class MapboxPaintFactory : IPaintFactory
     {
-        public IEnumerable<SKPaint> CreateOrUpdatePaint(ITileStyle style, EvaluationContext context)
+        Func<string, SKImage> _spriteFactory;
+
+        public MapboxPaintFactory(MapboxSpriteFile? spriteFile) 
         {
-            switch (style.Type)
+            if (spriteFile == null)
+                throw new ArgumentNullException(nameof(spriteFile));
+
+            _spriteFactory = (name) =>
+            {
+                var bitmap = spriteFile.Bitmap;
+                var sprite = spriteFile.Sprites[name];
+
+                if (bitmap.Native == null)
+                    // Convert byte array to SKImage
+                    bitmap.Native = SKImage.FromEncodedData(bitmap.Binary);
+
+                return ((SKImage)bitmap.Native).Subset(new SKRectI(sprite.X, sprite.Y, sprite.X + sprite.Width, sprite.Y + sprite.Height));
+            };
+        }
+
+        public IPaint CreatePaint(ITileStyle style)
+        {
+            switch (style.StyleType)
             {
                 case "background":
-                    return MapboxBackgroundPaint.CreateOrUpdate(style, context);
+                    return new MapboxBackgroundPaint(style, _spriteFactory);
                 case "raster":
-                    return MapboxRasterPaint.CreateOrUpdate(style, context);
+                    return new MapboxRasterPaint(style, _spriteFactory);
                 case "fill":
-                    return MapboxVectorPaint.CreateOrUpdate(style, context);
+                    return new MapboxFillPaint(style, _spriteFactory);
                 case "line":
-                    return MapboxBackgroundPaint.CreateOrUpdate(style, context);
+                    return new MapboxLinePaint(style, _spriteFactory);
+                case "symbol":
+                    return null;
+                case "fill-extrusion":
+                    return null;
+                default:
+                    throw new NotImplementedException($"Style with type '{style.StyleType}' is unknown");
             }
-
-            return new List<SKPaint> { new SKPaint() };
         }
     }
 }

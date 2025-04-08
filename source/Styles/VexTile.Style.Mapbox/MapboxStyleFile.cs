@@ -36,7 +36,9 @@ public class MapboxStyleFile
     public float Pitch { get; set; } = 0.0f;
 
     [JsonProperty("sprite")]
-    public string Sprite { get; set; } = string.Empty;
+    internal string spriteFile = string.Empty;
+
+    public MapboxSpriteFile? Sprites { get; set; }
 
     [JsonProperty("zoom")]
     public float Zoom { get; set; }

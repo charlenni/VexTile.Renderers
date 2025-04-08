@@ -4,33 +4,67 @@ using SkiaSharp;
 using VexTile.Common.Enums;
 using VexTile.Common.Interfaces;
 using VexTile.Common.Primitives;
+using VexTile.Renderer.Common.Extensions;
 using VexTile.Renderer.Common.Interfaces;
 
 namespace VexTile.Renderer.Bitmap;
 
+/// <summary>
+/// A renderer, that converts data from different tile sources with the given styles
+/// to a bitmap tile
+/// </summary>
 public class Renderer
 {
-    public static async Task<SKBitmap> Render(Tile tile, IEnumerable<ITileSource> sources, IEnumerable<ITileStyle> styles, IPaintFactory paintFactory)
+    static SKRect _backgroundRect = new SKRect(0, 0, 512, 512);
+
+    IEnumerable<ITileSource> _sources;
+    IEnumerable<ITileStyle> _styles;
+    Dictionary<ITileStyle, IPaint> _paints;
+    
+    /// <summary>
+    /// Create renderer
+    /// </summary>
+    /// <param name="sources">Tile sources to use for data</param>
+    /// <param name="styles">Tile styles to use to render </param>
+    /// <param name="paintFactory">Factory to create paints from tile styles</param>
+    public Renderer(IEnumerable<ITileSource> sources, IEnumerable<ITileStyle> styles, IPaintFactory paintFactory)
     {
-        var bitmap = new SKBitmap(512, 512);
+        _sources = sources;
+        _styles = styles;
+
+        _paints = new Dictionary<ITileStyle, IPaint>(styles.Count());
+
+        // Create for each style a IPaint, which then creates a SKPaint for a given evaluation context
+        foreach (var style in styles)
+        {
+            _paints.Add(style, paintFactory.CreatePaint(style));
+        }
+    }
+
+    public async Task<SKData> Render(Tile tile)
+    {
+        var bitmap = new SKBitmap(512, 512, SKColorType.Bgra8888, SKAlphaType.Opaque);
         var canvas = new SKCanvas(bitmap);
         var tiles = new Dictionary<string, object>();
 
         // Get tiles from all sources
-        foreach (var source in sources)
+        foreach (var source in _sources)
         {
-            var binaryTileData = await source.DataSource.GetTileAsync(tile);
+            byte[]? binaryTileData = null;
+
+            if (source.MinZoom <= tile.Zoom && source.MaxZoom >= tile.Zoom)
+                binaryTileData = await source.DataSource.GetTileAsync(tile);
 
             if (binaryTileData == null)
                 continue;
 
-            switch (source.Type)
+            switch (source.SourceType)
             {
                 case SourceType.Raster:
                     tiles.Add(source.Name, binaryTileData);
                     break;
                 case SourceType.Vector:
-                    var tileData = source.TileConverter.Convert(tile, binaryTileData);
+                    var tileData = await source.TileConverter.Convert(tile, binaryTileData);
                     tiles.Add(source.Name, tileData);
                     break;
             }
@@ -39,68 +73,91 @@ public class Renderer
         var context = new EvaluationContext(tile.Zoom);
 
         // Draw tiles data style after style
-        foreach (var style in styles)
+        foreach (var style in _styles)
         {
             if (!IsVisible(tile.Zoom, style))
                 continue;
 
-            switch (style.Type)
+            switch (style.StyleType)
             {
                 case "background":
-                    RenderAsBackground(canvas, context, style, paintFactory);
+                    RenderAsBackground(canvas, context, style, _paints[style]);
                     break;
                 case "raster":
-                    RenderTileAsRaster(canvas, context, (byte[])tiles[style.Source], style, paintFactory);
+                    RenderTileAsRaster(canvas, context, (byte[])tiles[style.Source], style, _paints[style]);
                     break;
                 case "fill":
                 case "line":
                     if (tiles[style.Source] != null)
-                        RenderTileAsVector(canvas, context, (VectorTile)tiles[style.Source], style, paintFactory);
+                        RenderTileAsVector(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+                    break;
+                case "symbol":
+                case "fill-extrusion":
                     break;
                 default:
-                    throw new NotImplementedException($"Style.Type '{style.Type}' is unknown");
+                    throw new NotImplementedException($"Style with type '{style.StyleType}' is unknown");
             }
         }
 
         // Draw symbols in revers order, because last style layer is the top most layer
-        foreach (var style in styles.Reverse())
+        foreach (var style in _styles.Reverse())
         {
             if (!IsVisible(tile.Zoom, style))
                 continue;
         }
 
         // Return ready rendered bitmap
-        return bitmap;
+        return bitmap.Encode(SKEncodedImageFormat.Png, 100);
     }
 
-    private static void RenderAsBackground(SKCanvas canvas, EvaluationContext context, ITileStyle style, IPaintFactory paintFactory)
+    private static void RenderAsBackground(SKCanvas canvas, EvaluationContext context, ITileStyle style, IPaint paint)
     {
-        var paints = paintFactory.CreateOrUpdatePaint(style, context);
+        var skPaints = paint.CreateSKPaint(context);
+
+        foreach (var skPaint in skPaints)
+            canvas.DrawRect(_backgroundRect, skPaint);
     }
 
-    private static void RenderTileAsRaster(SKCanvas canvas, EvaluationContext context, byte[] data, ITileStyle style, IPaintFactory paintFactory)
+    private static void RenderTileAsRaster(SKCanvas canvas, EvaluationContext context, byte[] data, ITileStyle style, IPaint paint)
     {
-        var paints = paintFactory.CreateOrUpdatePaint(style, context);
+        if (data == null || data.Length == 0) 
+            throw new ArgumentException("Image data is empty", nameof(data));
+
+        using var bitmap = SKBitmap.Decode(data);
+
+        if (bitmap == null) 
+            throw new Exception("Not possible to decode image");
+
+        var skPaints = paint.CreateSKPaint(context);
+
+        foreach (var skPaint in skPaints)
+        {
+            canvas.DrawBitmap(bitmap, _backgroundRect, skPaint);
+        }
     }
 
-    private static void RenderTileAsVector(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaintFactory paintFactory)
+    private static void RenderTileAsVector(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
     {
-        var features = data.Layers.Where(l => l.Name == style.SourceLayer)
-            .First()
-            .Features
-            .Where(f => style.Filter.Evaluate(f));
+        var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
+
+        if (layer == null)
+            return;
+
+        var features = layer.Features.Where(f => style.Filter.Evaluate(f));
 
         if (features == null || features.Count() == 0)
             return;
 
-        var paints = paintFactory.CreateOrUpdatePaint(style, context);
+        var skPaints = paint.CreateSKPaint(context);
 
         // Draw features that belong to this style
         foreach (var feature in features)
         {
-            foreach (var paint in paints)
+            var path = feature.ToSKPath();
+
+            foreach (var skPaint in skPaints)
             {
-                canvas.DrawPath(feature.ToSKPath(), paint);
+                canvas.DrawPath(path, skPaint);
             }
         }
     }
@@ -109,8 +166,10 @@ public class Renderer
     {
         if (!style.Visible)
             return false;
-        if (style.MinZoom > zoom || style.MaxZoom <= zoom)
-            return false; ;
+        if (style.MinZoom > -1 && style.MinZoom > zoom)
+            return false;
+        if (style.MaxZoom > -1 && style.MaxZoom <= zoom)
+            return false;
 
         return true;
     }

@@ -235,4 +235,6 @@ public class MapboxPaint
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("raster-saturation")]
     public StoppedFloat RasterSaturation { get; set; } = new StoppedFloat() { SingleVal = 0.0f };
+
+    public static MapboxPaint Empty = new MapboxPaint();
 }

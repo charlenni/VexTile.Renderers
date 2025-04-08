@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using VexTile.Common.Primitives;
+﻿using VexTile.Common.Primitives;
 
 namespace VexTile.Common.Interfaces;
 
@@ -8,7 +7,7 @@ public interface ITileStyle
     /// <summary>
     /// Type of this style
     /// </summary>
-    string Type { get; }
+    string StyleType { get; }
 
     /// <summary>
     /// Minimal zoom from which this style layer is used
@@ -39,11 +38,6 @@ public interface ITileStyle
     /// Name of source layer this style belongs to 
     /// </summary>
     string SourceLayer { get; }
-
-    /// <summary>
-    /// Paint to use to draw the features
-    /// </summary>
-    IEnumerable<IVectorPaint> Paints { get; }
 
     /// <summary>
     /// Update the paints in the style with the new values in context

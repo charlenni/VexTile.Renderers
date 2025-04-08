@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
+using VexTile.Common.Interfaces;
 
 namespace VexTile.Style.Mapbox;
 
 /// <summary>
-/// Class holding Sprite data in Json format
+/// Class holding information about bitmap regions data (sprites) in Json format
 /// </summary>
-public class MapboxSprite
+public class MapboxSprite : IBitmapRegion
 {
     [JsonProperty("x")]
     public int X { get; set; }

@@ -179,4 +179,6 @@ public class MapboxLayout
 
     [JsonProperty("text-writing-mode")]
     public string[] TextWritingMode { get; set; } = [];
+
+    public static MapboxLayout Empty = new MapboxLayout();
 }

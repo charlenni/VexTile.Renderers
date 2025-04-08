@@ -2,14 +2,14 @@
 using System.IO.Compression;
 using VexTile.Common.Interfaces;
 
-namespace VexTile.Converter.Mapbox;
+namespace VexTile.TileConverter.Mapbox;
 
 public class MapboxTileConverter : ITileConverter
 {
     private NetTopologySuite.IO.VectorTiles.Mapbox.MapboxTileReader _tileConverter;
-    private IDataSource _dataSource;
+    private ITileDataSource _dataSource;
 
-    public MapboxTileConverter(IDataSource dataSource)
+    public MapboxTileConverter(ITileDataSource dataSource)
     {
         _dataSource = dataSource;
         _tileConverter = new NetTopologySuite.IO.VectorTiles.Mapbox.MapboxTileReader();

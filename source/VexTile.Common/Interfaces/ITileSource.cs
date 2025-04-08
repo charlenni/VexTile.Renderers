@@ -1,26 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using VexTile.Common.Enums;
+﻿using VexTile.Common.Enums;
 
 namespace VexTile.Common.Interfaces
 {
     public interface ITileSource
     {
         /// <summary>
-        /// Name for this source
+        /// Name of source
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// Type of this source
+        /// Minimal zoom level for tile source
         /// </summary>
-        SourceType Type { get; }
+        int MinZoom { get; }
 
         /// <summary>
-        /// DataSource used for this tile source
+        /// Maximal zoom level for tile source
         /// </summary>
-        IDataSource DataSource { get; }
+        int MaxZoom { get; }
+
+        /// <summary>
+        /// Type of this source
+        /// </summary>
+        SourceType SourceType { get; }
+
+        /// <summary>
+        /// TileDataSource used for this tile source
+        /// </summary>
+        ITileDataSource DataSource { get; }
 
         /// <summary>
         /// TileConverter used for this tile source

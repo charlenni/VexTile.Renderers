@@ -11,7 +11,7 @@ public class StoppedFloatArray : IExpression
 
     public IList<KeyValuePair<float, float[]>> Stops { get; set; }
 
-    public float[] SingleVal { get; set; }
+    public float[] SingleVal { get; set; } = [];
 
     /// <summary>
     /// Calculate the correct value for a stopped function

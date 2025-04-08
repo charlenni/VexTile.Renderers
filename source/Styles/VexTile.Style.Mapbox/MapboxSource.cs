@@ -1,79 +1,123 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Converters;
+using VexTile.Common.Enums;
+using VexTile.Common.Interfaces;
+using VexTile.Style.Mapbox.Enums;
+using VexTile.Style.Mapbox.Expressions;
+using VexTile.Style.Mapbox.Json.Converter;
+using VexTile.TileConverter.Mapbox;
+using VexTile.TileDataSource;
 
 namespace VexTile.Style.Mapbox;
 
 /// <summary>
-/// Source in TileJSON format
-/// See https://github.com/mapbox/tilejson-spec/tree/master/2.2.0
+/// Source in Json format
+/// See https://docs.mapbox.com/style-spec/reference/sources/
 /// </summary>
-public class MapboxSource
+public class MapboxSource : ITileSource
 {
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("type")]
-    public string Type { get; set; } = string.Empty;
-
-    [JsonProperty("url")]
-    public string Url { get; set; } = string.Empty;
-
-    [JsonProperty("tileSize")]
-    public int TileSize { get; set; } = 512;
-
-    [JsonProperty("pixel_size")]
-    public int PixelSize { get; set; }
-
-    [JsonProperty("vector_layers")]
-    public IList<MapboxTileStyle> VectorLayers { get; set; } = [];
-
-    [JsonProperty("tilejson")]
-    public string TileJson { get; set; } = string.Empty;
-
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
-
-    [JsonProperty("description")]
-    public string Description { get; set; } = string.Empty;
-
-    [JsonProperty("version")]
-    public string Version { get; set; } = string.Empty;
-
     [JsonProperty("attribution")]
     public string Attribution { get; set; } = string.Empty;
-
-    [JsonProperty("template")]
-    public string Template { get; set; } = string.Empty;
-
-    [JsonProperty("legend")]
-    public string Legend { get; set; } = string.Empty;
-
-    [JsonProperty("scheme")]
-    public string Scheme { get; set; } = string.Empty;
-
-    [JsonProperty("tiles")]
-    public IList<string> Tiles { get; set; } = [];
-
-    [JsonProperty("grids")]
-    public IList<string> Grids { get; set; } = [];
-
-    [JsonProperty("data")]
-    public IList<string> Data { get; set; } = [];
-
-    [JsonProperty("minzoom")]
-    public int ZoomMin { get; set; }
-
-    [JsonProperty("maxzoom")]
-    public int ZoomMax { get; set; }
 
     [JsonProperty("bounds")]
     public float[] Bounds { get; set; } = [-180.0f, -85.051129f, 180.0f, 85.051129f];
 
-    [JsonProperty("center")]
-    public JValue[] Center { get; set; }
+    [JsonProperty("buffer")]
+    public int Buffer { get; set; } = 128;
 
-    public override string ToString()
+    [JsonProperty("cluster")]
+    public bool Cluster { get; set; } = false;
+
+    [JsonProperty("clusterMaxZoom")]
+    public float ClusterMaxZoom { get; set; } = 0.0f;
+
+    [JsonProperty("clusterMinPoints")]
+    public int ClusterMinPoints { get; set; } = 2;
+
+    // clusterProperties
+
+    [JsonProperty("clusterRadius")]
+    public int ClusterRadius { get; set; } = 50;
+
+    // data
+
+    [JsonProperty("dynamic")]
+    public bool Dynamic { get; set; } = false;
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonProperty("encoding")]
+    public Encoding Encoding { get; set; } = Encoding.Mapbox;
+
+    [JsonConverter(typeof(ExpressionConverter))]
+    [JsonProperty("filter")]
+    public IExpression Filter { get; set; }
+
+    [JsonProperty("generateId")]
+    public bool GenerateId { get; set; } = false;
+
+    [JsonProperty("lineMetrics")]
+    public bool LineMetrics { get; set; } = false;
+
+    [JsonProperty("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonProperty("maxzoom")]
+    public int MaxZoom { get; set; } = 22;
+
+    [JsonProperty("minzoom")]
+    public int MinZoom { get; set; } = 0;
+
+    // promoteId
+
+    [JsonProperty("rasterLayers")]
+    public string RasterLayers { get; set; } = string.Empty;
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonProperty("scheme")]
+    public Scheme Scheme { get; set; } = Scheme.Xyz;
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonProperty("type")]
+    public SourceType SourceType { get; set; }
+
+    [JsonProperty("tiles")]
+    public IList<string> Tiles { get; set; } = [];
+
+    [JsonProperty("tileSize")]
+    public int TileSize { get; set; } = 512;
+
+    [JsonProperty("url")]
+    public string Url { get; set; } = string.Empty;
+
+    [JsonProperty("urls")]
+    public string[] Urls { get; set; } = [];
+
+    [JsonProperty("volatile")]
+    public bool Volatile { get; set; } = false;
+
+    public string Name { get; internal set; }
+
+    public ITileDataSource DataSource { get; internal set; }
+
+    public ITileConverter TileConverter { get; internal set; }
+
+    public void Create()
     {
-        return Id + " " + Type;
+        string sourceUrl = string.Empty;
+
+        if (!string.IsNullOrEmpty(Url))
+            sourceUrl = Url;
+        else if (Tiles != null && Tiles.Count > 0)
+            sourceUrl = Tiles[0];
+
+        var dataSource = DefaultTileDataSourceFactory.CreateTileDataSource([sourceUrl]);
+
+        if (dataSource == null)
+            return;
+
+        DataSource = dataSource;
+
+        if (SourceType == SourceType.Vector)
+            TileConverter = new MapboxTileConverter(DataSource);
     }
 }

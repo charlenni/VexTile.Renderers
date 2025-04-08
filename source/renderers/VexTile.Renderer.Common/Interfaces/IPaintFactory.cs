@@ -1,10 +1,11 @@
-﻿using SkiaSharp;
-using VexTile.Common.Interfaces;
-using VexTile.Common.Primitives;
+﻿using VexTile.Common.Interfaces;
 
 namespace VexTile.Renderer.Common.Interfaces;
 
+/// <summary>
+/// Interface to create a style file independent class for each style
+/// </summary>
 public interface IPaintFactory
 {
-    IEnumerable<SKPaint> CreateOrUpdatePaint(ITileStyle style, EvaluationContext context);
+    IPaint CreatePaint(ITileStyle style);
 }

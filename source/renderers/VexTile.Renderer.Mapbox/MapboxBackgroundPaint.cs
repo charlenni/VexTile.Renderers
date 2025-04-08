@@ -1,21 +1,18 @@
 ﻿using SkiaSharp;
 using VexTile.Common.Interfaces;
-using VexTile.Common.Primitives;
+using VexTile.Renderer.Mapbox.Extensions;
 using VexTile.Style.Mapbox;
 
 namespace VexTile.Renderer.Mapbox;
 
-public class MapboxBackgroundPaint
+public class MapboxBackgroundPaint : MapboxBasePaint
 {
-    IEnumerable<MapboxPaint> _paint;
-    EvaluationContext? _lastContext;
-    IEnumerable<SKPaint>? _lastPaints;
-
-    public MapboxBackgroundPaint(ITileStyle style)
+    public MapboxBackgroundPaint(ITileStyle style, Func<string, SKImage> spriteFactory)
     {
-        // Background has only properties in Paint, no in Layout
-        var paint = ((MapboxTileStyle)style).Paint;
         var mapboxStyle = (MapboxTileStyle)style;
+
+        // Background has only properties in Paint, no in Layout
+        var paint = mapboxStyle.Paint;
 
         var brush = new MapboxPaint(mapboxStyle.Id);
 
@@ -26,7 +23,7 @@ public class MapboxBackgroundPaint
         // background-color
         //   Optional color. Defaults to #000000. Disabled by background-pattern. Transitionable.
         //   The color with which the background will be drawn.
-        if (paint.BackgroundColor != null)
+        if (paint?.BackgroundColor != null)
         {
             if (paint.BackgroundColor.Stops != null)
             {
@@ -43,33 +40,23 @@ public class MapboxBackgroundPaint
         //   Name of image in sprite to use for drawing image background. For seamless patterns, 
         //   image width and height must be a factor of two (2, 4, 8, …, 512). Note that 
         //   zoom -dependent expressions will be evaluated only at integer zoom levels.
-        if (paint.BackgroundPattern != null)
+        if (paint?.BackgroundPattern != null)
         {
-            if (paint.BackgroundPattern.Stops == null && !paint.BackgroundPattern.SingleVal.Contains("{"))
+            if (!string.IsNullOrEmpty(paint?.BackgroundPattern.SingleVal) || paint?.BackgroundPattern.Stops.Count != 0)
             {
-                var sprite = spriteAtlas.GetSprite(paint.BackgroundPattern.SingleVal);
-                if (sprite != null)
-                    brush.SetFixShader(sprite.ToSKImage().ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat));
-            }
-            else
-            {
-                brush.SetVariableShader((context) =>
+                if (paint.BackgroundPattern.Stops == null && !paint.BackgroundPattern.SingleVal.Contains("{"))
                 {
-                    var name = ReplaceFields(paint.BackgroundPattern.Evaluate(context.Zoom), null);
+                    brush.SetFixShader(spriteFactory(paint.BackgroundPattern.SingleVal).ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat));
+                }
+                else
+                {
+                    brush.SetVariableShader((context) =>
+                    {
+                        var name = paint.BackgroundPattern.Evaluate(context.Zoom).ReplaceFields(null);
 
-                    var sprite = spriteAtlas.GetSprite(name);
-                    if (sprite != null)
-                    {
-                        return sprite.ToSKImage().ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat);
-                    }
-                    else
-                    {
-                        // Log information
-                        Logging.Logger.Log(Logging.LogLevel.Information, $"Fill pattern {name} not found");
-                        // No sprite found
-                        return null;
-                    }
-                });
+                        return spriteFactory(name).ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat);
+                    });
+                }
             }
         }
 
@@ -88,17 +75,6 @@ public class MapboxBackgroundPaint
             }
         }
 
-        _paint = new List<MapboxPaint> { brush };
-    }
-
-    public IEnumerable<SKPaint> CreateOrUpdate(ITileStyle style, EvaluationContext context)
-    {
-        if (_lastContext != null && context.Equals(_lastContext))
-            return _lastPaints;
-
-        _lastContext = context;
-        _lastPaints = _lastPaints;
-
-        return _lastPaints;
+        _paints = new List<MapboxPaint> { brush };
     }
 }

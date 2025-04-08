@@ -1,6 +1,5 @@
 ﻿using NetTopologySuite.IO.VectorTiles;
 using NetTopologySuite.IO.VectorTiles.Tiles;
-using VexTile.Common.Enums;
 
 namespace VexTile.Common.Interfaces;
 

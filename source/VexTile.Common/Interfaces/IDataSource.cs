@@ -1,8 +1,9 @@
-﻿using NetTopologySuite.IO.VectorTiles.Tiles;
+﻿namespace VexTile.Common.Interfaces;
 
-namespace VexTile.Common.Interfaces;
-
+/// <summary>
+/// Data source that is used as one time source
+/// </summary>
 public interface IDataSource
 {
-    Task<byte[]?> GetTileAsync(Tile tile);
+    Task<byte[]?> GetBytesAsync(string source);
 }

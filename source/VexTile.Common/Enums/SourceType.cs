@@ -2,6 +2,11 @@
 
 public enum SourceType
 {
-    Raster,
-    Vector
+    Vector, 
+    Raster, 
+    RasterArray, 
+    RasterDEM, 
+    GeoJSON, 
+    Image, 
+    Video
 }

@@ -7,6 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Files\Sprites\osm-liberty.json" />
+    <None Remove="Files\Sprites\osm-liberty.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Files\Sprites\osm-liberty.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Files\Sprites\osm-liberty.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">
@@ -16,7 +30,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\source\renderers\VexTile.Renderer.Bitmap\VexTile.Renderer.Bitmap.csproj" />
+    <ProjectReference Include="..\..\source\renderers\VexTile.Renderer.Mapbox\VexTile.Renderer.Mapbox.csproj" />
     <ProjectReference Include="..\..\source\Styles\VexTile.Style.Mapbox\VexTile.Style.Mapbox.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Files\osm-liberty.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Files\Sprites\osm-liberty%402x.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Files\Sprites\osm-liberty%402x.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Files\zurich.mbtiles">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

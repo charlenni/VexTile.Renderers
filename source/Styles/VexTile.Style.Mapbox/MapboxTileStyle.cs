@@ -13,26 +13,26 @@ public class MapboxTileStyle : ITileStyle
     public string Id { get; set; } = string.Empty;
 
     [JsonProperty("type")]
-    public string Type { get; set; } = string.Empty;
+    public string StyleType { get; set; } = string.Empty;
 
     [JsonConverter(typeof(FilterConverter))]
     [JsonProperty("filter")]
     public IFilter Filter { get; set; } = new EmptyFilter();
 
     [JsonProperty("layout")]
-    public MapboxLayout? Layout { get; set; } = null;
+    public MapboxLayout Layout { get; set; } = MapboxLayout.Empty;
 
     [JsonProperty("maxzoom")]
-    public int MaxZoom { get; set; }
+    public int MaxZoom { get; set; } = -1;
 
     [JsonProperty("metadata")]
     public JObject? Metadata { get; set; }
 
     [JsonProperty("minzoom")]
-    public int MinZoom { get; set; }
+    public int MinZoom { get; set; } = -1;
 
     [JsonProperty("paint")]
-    public MapboxPaint? Paint { get; set; }
+    public MapboxPaint Paint { get; set; } = MapboxPaint.Empty;
 
     [JsonProperty("slot")]
     public string Slot { get; set; } = string.Empty;
@@ -46,13 +46,11 @@ public class MapboxTileStyle : ITileStyle
     [JsonProperty("interactive")]
     public bool Interactive { get; set; }
 
-    public IEnumerable<IVectorPaint> Paints => throw new NotImplementedException();
-
     public bool Visible => Layout?.Visibility == "visible";
 
     public override string ToString()
     {
-        return Id + " " + Type;
+        return Id + " " + StyleType;
     }
 
     public void Update(EvaluationContext context)
