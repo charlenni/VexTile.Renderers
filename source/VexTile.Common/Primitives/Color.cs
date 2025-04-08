@@ -17,6 +17,6 @@
 
         // Default colors
         public static Color Empty = new(0, 0, 0, 0);
-        public static Color Black = new(0, 0, 0, 0);
+        public static Color Black = new(0, 0, 0, 255);
     }
 }

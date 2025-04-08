@@ -5,7 +5,7 @@ namespace VexTile.Renderer.Mapbox;
 
 public class MapboxPaint
 {
-    readonly SKPaint _paint = new SKPaint() { IsAntialias = true, BlendMode = SKBlendMode.SrcOver };  // Set this by default
+    readonly SKPaint _paint = new SKPaint() { IsAntialias = true, BlendMode = SKBlendMode.SrcOver, Color = SKColors.Black };  // Set this by default
     EvaluationContext? _lastContext;
     float _strokeWidth;
 
@@ -91,7 +91,7 @@ public class MapboxPaint
 
     #region Color
 
-    SKColor color = SKColor.Empty;
+    SKColor color = new(0, 0, 0, 255);
 
     bool variableColor = false;
 
