@@ -43,7 +43,7 @@ public class Renderer
 
     public async Task<SKData> Render(Tile tile)
     {
-        var bitmap = new SKBitmap(512, 512, SKColorType.Bgra8888, SKAlphaType.Opaque);
+        var bitmap = new SKBitmap(512, 512, SKColorType.Rgba8888, SKAlphaType.Opaque);
         var canvas = new SKCanvas(bitmap);
         var tiles = new Dictionary<string, object>();
 
