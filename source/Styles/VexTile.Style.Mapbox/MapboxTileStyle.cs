@@ -20,7 +20,7 @@ public class MapboxTileStyle : ITileStyle
     public IFilter Filter { get; set; } = new EmptyFilter();
 
     [JsonProperty("layout")]
-    public MapboxLayout Layout { get; set; } = MapboxLayout.Empty;
+    public MapboxLayout Layout { get; set; } = new MapboxLayout();
 
     [JsonProperty("maxzoom")]
     public int MaxZoom { get; set; } = -1;
@@ -32,7 +32,7 @@ public class MapboxTileStyle : ITileStyle
     public int MinZoom { get; set; } = -1;
 
     [JsonProperty("paint")]
-    public MapboxPaint Paint { get; set; } = MapboxPaint.Empty;
+    public MapboxPaint Paint { get; set; } = new MapboxPaint();
 
     [JsonProperty("slot")]
     public string Slot { get; set; } = string.Empty;
