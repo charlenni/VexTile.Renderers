@@ -22,7 +22,7 @@ public class MapboxRasterPaint : MapboxBasePaint
         //   The opacity at which the image will be drawn.
         if (paint?.RasterOpacity != null)
         {
-            if (paint.RasterOpacity.Stops != null)
+            if (paint.RasterOpacity.Stops != null && paint.RasterOpacity.Stops.Count > 0)
             {
                 brush.SetVariableOpacity((context) => paint.RasterOpacity.Evaluate(context.Zoom));
             }

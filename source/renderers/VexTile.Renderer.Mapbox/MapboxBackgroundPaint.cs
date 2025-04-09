@@ -25,7 +25,7 @@ public class MapboxBackgroundPaint : MapboxBasePaint
         //   The color with which the background will be drawn.
         if (paint?.BackgroundColor != null)
         {
-            if (paint.BackgroundColor.Stops != null)
+            if (paint.BackgroundColor.Stops != null && paint.BackgroundColor.Stops.Count > 0)
             {
                 brush.SetVariableColor((context) => paint.BackgroundColor.Evaluate(context.Zoom).ToSKColor());
             }
@@ -65,7 +65,7 @@ public class MapboxBackgroundPaint : MapboxBasePaint
         //   The opacity at which the background will be drawn.
         if (paint?.BackgroundOpacity != null)
         {
-            if (paint.BackgroundOpacity.Stops != null)
+            if (paint.BackgroundOpacity.Stops != null && paint.BackgroundOpacity.Stops.Count > 0)
             {
                 brush.SetVariableOpacity((context) => paint.BackgroundOpacity.Evaluate(context.Zoom));
             }

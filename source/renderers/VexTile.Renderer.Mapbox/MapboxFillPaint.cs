@@ -42,7 +42,7 @@ public class MapboxFillPaint : MapboxBasePaint
         //   opacity of the 1px stroke, if it is used.
         if (paint.FillColor != null)
         {
-            if (paint.FillColor.Stops != null)
+            if (paint.FillColor.Stops != null && paint.FillColor.Stops.Count > 0)
             {
                 area.SetVariableColor((context) => mapboxStyle.Paint.FillColor.Evaluate(context.Zoom).ToSKColor());
                 line.SetVariableColor((context) => mapboxStyle.Paint.FillColor.Evaluate(context.Zoom).ToSKColor());
@@ -60,7 +60,7 @@ public class MapboxFillPaint : MapboxBasePaint
         //   value will also affect the 1px stroke around the fill, if the stroke is used.
         if (paint.FillOpacity != null)
         {
-            if (paint.FillOpacity.Stops != null)
+            if (paint.FillOpacity.Stops != null && paint.FillOpacity.Stops.Count > 0)
             {
                 area.SetVariableOpacity((context) => mapboxStyle.Paint.FillOpacity.Evaluate(context.Zoom));
                 line.SetVariableOpacity((context) => mapboxStyle.Paint.FillOpacity.Evaluate(context.Zoom));
@@ -77,7 +77,7 @@ public class MapboxFillPaint : MapboxBasePaint
         //   Whether or not the fill should be antialiased.
         if (paint.FillAntialias != null)
         {
-            if (paint.FillAntialias.Stops != null)
+            if (paint.FillAntialias.Stops != null && paint.FillAntialias.Stops.Count > 0)
             {
                 area.SetVariableAntialias((context) => mapboxStyle.Paint.FillAntialias.Evaluate(context.Zoom));
                 line.SetVariableAntialias((context) => mapboxStyle.Paint.FillAntialias.Evaluate(context.Zoom));
@@ -95,7 +95,7 @@ public class MapboxFillPaint : MapboxBasePaint
         if (paint.FillOutlineColor != null)
         {
             hasOutline = true;
-            if (paint.FillOutlineColor.Stops != null)
+            if (paint.FillOutlineColor.Stops != null && paint.FillOutlineColor.Stops.Count > 0)
             {
                 line.SetVariableColor((context) => mapboxStyle.Paint.FillOutlineColor.Evaluate(context.Zoom).ToSKColor());
             }
@@ -125,25 +125,53 @@ public class MapboxFillPaint : MapboxBasePaint
         if (paint.FillPattern != null)
         {
             // FillPattern needs a color. Instead no pattern is drawn.
-            area.SetFixColor(SKColors.Black);
+            //area.SetFixColor(SKColors.Black);
 
-            if (paint.FillPattern.Stops == null && !paint.FillPattern.SingleVal.Contains("{"))
+            if (paint.FillPattern.Stops != null && paint.FillPattern.Stops.Count > 0)
             {
-                area.SetVariableShader((context) =>
+                // TODO: Check this, if the code is correct
+                if (!paint.FillPattern.SingleVal.Contains("{"))
                 {
-                    var name = paint.FillPattern.SingleVal;
+                    area.SetVariableShader((context) =>
+                    {
+                        var name = paint.FillPattern.SingleVal;
 
-                    return spriteFactory(name).ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, SKMatrix.CreateScale(context.Scale, context.Scale));
-                });
+                        return spriteFactory(name).ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, SKMatrix.CreateScale(context.Scale, context.Scale));
+                    });
+                }
+                else
+                {
+                    area.SetVariableShader((context) =>
+                    {
+                        var name = mapboxStyle.Paint?.FillPattern.Evaluate(context.Zoom).ReplaceFields(context.Attributes);
+
+                        return spriteFactory(name).ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, SKMatrix.CreateScale(context.Scale, context.Scale));
+                    });
+                }
             }
             else
             {
-                area.SetVariableShader((context) =>
+                if (!string.IsNullOrEmpty(paint.FillPattern.SingleVal))
                 {
-                    var name = mapboxStyle.Paint?.FillPattern.Evaluate(context.Zoom).ReplaceFields(context.Attributes);
+                    if (paint.FillPattern.SingleVal.Contains("{"))
+                    {
+                        area.SetVariableShader((context) =>
+                        {
+                            var name = mapboxStyle.Paint?.FillPattern.Evaluate(context.Zoom).ReplaceFields(context.Attributes);
 
-                    return spriteFactory(name).ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, SKMatrix.CreateScale(context.Scale, context.Scale));
-                });
+                            return spriteFactory(name).ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, SKMatrix.CreateScale(context.Scale, context.Scale));
+                        });
+                    }
+                    else
+                    {
+                        area.SetVariableShader((context) =>
+                        {
+                            var name = paint.FillPattern.SingleVal;
+
+                            return spriteFactory(name).ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, SKMatrix.CreateScale(context.Scale, context.Scale));
+                        });
+                    }
+                }
             }
         }
 

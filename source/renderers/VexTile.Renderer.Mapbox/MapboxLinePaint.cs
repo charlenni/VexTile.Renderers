@@ -79,7 +79,7 @@ public class MapboxLinePaint : MapboxBasePaint
         //   The color with which the line will be drawn.
         if (paint?.LineColor != null)
         {
-            if (paint.LineColor.Stops != null)
+            if (paint.LineColor.Stops != null && paint.LineColor.Stops.Count > 0)
             {
                 line.SetVariableColor((context) => paint.LineColor.Evaluate(context.Zoom).ToSKColor());
             }
@@ -94,7 +94,7 @@ public class MapboxLinePaint : MapboxBasePaint
         //   Stroke thickness.
         if (paint?.LineWidth != null)
         {
-            if (paint.LineWidth.Stops != null)
+            if (paint.LineWidth.Stops != null && paint.LineWidth.Stops.Count > 0)
             {
                 line.SetVariableStrokeWidth((context) => paint.LineWidth.Evaluate(context.Zoom));
             }
@@ -109,7 +109,7 @@ public class MapboxLinePaint : MapboxBasePaint
         //   The opacity at which the line will be drawn.
         if (paint?.LineOpacity != null)
         {
-            if (paint.LineOpacity.Stops != null)
+            if (paint.LineOpacity.Stops != null && paint.LineOpacity.Stops.Count > 0)
             {
                 line.SetVariableOpacity((context) => paint.LineOpacity.Evaluate(context.Zoom));
             }
@@ -126,7 +126,7 @@ public class MapboxLinePaint : MapboxBasePaint
         //   multiply the length by the current line width.
         if (paint?.LineDashArray != null)
         {
-            if (paint.LineDashArray.Stops != null)
+            if (paint.LineDashArray.Stops != null && paint.LineDashArray.Stops.Count > 0)
             {
                 line.SetVariableDashArray((context) => paint.LineDashArray.Evaluate(context.Zoom));
             }
