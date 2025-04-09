@@ -76,7 +76,7 @@ public class MapboxPaint
                 array[i] = array[i] * _paint.StrokeWidth;
             _paint.PathEffect = SKPathEffect.CreateDash(array, 0);
         }
-        else if (fixDashArray != null)
+        else if (fixDashArray != null && fixDashArray.Length > 0)
         {
             var array = new float[fixDashArray.Length];
             for (var i = 0; i < array.Length; i++)
