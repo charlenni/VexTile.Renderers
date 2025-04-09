@@ -1,4 +1,5 @@
 ﻿using NetTopologySuite.IO.VectorTiles;
+using NetTopologySuite.IO.VectorTiles.Mapbox;
 using System.IO.Compression;
 using VexTile.Common.Interfaces;
 
@@ -33,7 +34,7 @@ public class MapboxTileConverter : ITileConverter
         if (IsGZipped(data))
             stream = new GZipStream(stream, CompressionMode.Decompress);
 
-        return _tileConverter.Read(stream, tile);
+        return _tileConverter.Read(stream, tile, tgtFactory: (t, e) => new TileGeometryTransformRelative(t, 4096, 512));
     }
 
     private static bool IsGZipped(byte[] data)

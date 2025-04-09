@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NetTopologySuite.IO.VectorTiles.Mapbox" />
     <PackageReference Include="protobuf-net" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\NetTopologySuite.IO.VectorTiles\src\NetTopologySuite.IO.VectorTiles.Mapbox\NetTopologySuite.IO.VectorTiles.Mapbox.csproj" />
     <ProjectReference Include="..\..\VexTile.Common\VexTile.Common.csproj" />
   </ItemGroup>
 
