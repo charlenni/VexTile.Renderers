@@ -48,7 +48,7 @@ public class MapboxLayout
 
     [JsonConverter(typeof(StoppedStringConverter))]
     [JsonProperty("icon-image")]
-    public StoppedString IconImage { get; set; } = new StoppedString { SingleVal = string.Empty };
+    public StoppedString? IconImage { get; set; } = null;
 
     [JsonProperty("icon-keep-upright")]
     public bool IconKeepUpright { get; set; } = false;

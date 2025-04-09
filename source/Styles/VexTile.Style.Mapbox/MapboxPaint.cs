@@ -21,7 +21,7 @@ public class MapboxPaint
 
     [JsonConverter(typeof(StoppedStringConverter))]
     [JsonProperty("background-pattern")]
-    public StoppedString BackgroundPattern { get; set; } = new StoppedString { SingleVal = string.Empty };
+    public StoppedString? BackgroundPattern { get; set; } = null;
 
     [JsonConverter(typeof(StoppedBooleanConverter))]
     [JsonProperty("fill-antialias")]
@@ -41,11 +41,11 @@ public class MapboxPaint
 
     [JsonConverter(typeof(StoppedColorConverter))]
     [JsonProperty("fill-outline-color")]
-    public StoppedColor FillOutlineColor { get; set; } = new StoppedColor { SingleVal = Color.Black };
+    public StoppedColor? FillOutlineColor { get; set; } = null;
 
     [JsonConverter(typeof(StoppedStringConverter))]
     [JsonProperty("fill-pattern")]
-    public StoppedString FillPattern { get; set; } = new StoppedString() { SingleVal = string.Empty };
+    public StoppedString? FillPattern { get; set; } = null;
 
     [JsonConverter(typeof(StoppedFloatArrayConverter))]
     [JsonProperty("fill-translate")]
@@ -64,7 +64,7 @@ public class MapboxPaint
 
     [JsonConverter(typeof(StoppedFloatArrayConverter))]
     [JsonProperty("line-dasharray")]
-    public StoppedFloatArray LineDashArray { get; set; } = new StoppedFloatArray() { SingleVal = [] };
+    public StoppedFloatArray? LineDashArray { get; set; } = null;
 
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("line-emissive-strength")]
@@ -76,7 +76,7 @@ public class MapboxPaint
 
     [JsonConverter(typeof(StoppedColorConverter))]
     [JsonProperty("line-gradient")]
-    public StoppedColor LineGradient { get; set; } = new StoppedColor() { SingleVal = Color.Black };
+    public StoppedColor? LineGradient { get; set; } = null;
 
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("line-occlusion-opacity")]
@@ -92,7 +92,7 @@ public class MapboxPaint
 
     [JsonConverter(typeof(StoppedStringConverter))]
     [JsonProperty("line-pattern")]
-    public StoppedString LinePattern { get; set; } = new StoppedString() { SingleVal = string.Empty };
+    public StoppedString? LinePattern { get; set; } = null;
 
     [JsonConverter(typeof(StoppedFloatArrayConverter))]
     [JsonProperty("line-translate")]
@@ -100,6 +100,9 @@ public class MapboxPaint
 
     [JsonProperty("line-translate-anchor")]
     public string LineTranslateAnchor { get; set; } = "map";
+
+    [JsonProperty("line-trim-offset")]
+    public float[] LineTrimOffset { get; set; } = [0, 0];
 
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("line-width")]
@@ -131,7 +134,7 @@ public class MapboxPaint
 
     [JsonConverter(typeof(StoppedColorConverter))]
     [JsonProperty("icon-halo-color")]
-    public StoppedColor IconHaloColor { get; set; } = new StoppedColor { SingleVal = Color.Black };
+    public StoppedColor IconHaloColor { get; set; } = new StoppedColor { SingleVal = Color.Empty };
 
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("icon-halo-width")]
@@ -170,7 +173,7 @@ public class MapboxPaint
 
     [JsonConverter(typeof(StoppedColorConverter))]
     [JsonProperty("text-halo-color")]
-    public StoppedColor TextHaloColor { get; set; } = new StoppedColor { SingleVal = Color.Black };
+    public StoppedColor TextHaloColor { get; set; } = new StoppedColor { SingleVal = Color.Empty };
 
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("text-halo-width")]
@@ -192,14 +195,14 @@ public class MapboxPaint
     public string TextTranslateAnchor { get; set; } = "map";
 
     [JsonProperty("raster-brightness-max")]
-    public float RasterBrightnessMax { get; set; } = 1.0f;
+    public StoppedFloat RasterBrightnessMax { get; set; } = new StoppedFloat { SingleVal = 1.0f };
 
     [JsonProperty("raster-brightness-min")]
-    public float RasterBrightnessMin { get; set; } = 0.0f;
+    public StoppedFloat RasterBrightnessMin { get; set; } = new StoppedFloat { SingleVal = 0.0f };
 
     [JsonConverter(typeof(StoppedColorConverter))]
     [JsonProperty("raster-color")]
-    public StoppedColor RasterColor { get; set; } = new StoppedColor { SingleVal = Color.Empty };
+    public StoppedColor? RasterColor { get; set; } = null;
 
     [JsonConverter(typeof(StoppedFloatArrayConverter))]
     [JsonProperty("raster-color-mix")]
@@ -207,7 +210,7 @@ public class MapboxPaint
 
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("raster-color-range")]
-    public StoppedFloat RasterColorRange { get; set; } = new StoppedFloat() { SingleVal = 0.0f };
+    public StoppedFloat? RasterColorRange { get; set; } = null;
 
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("raster-contrast")]
@@ -235,6 +238,4 @@ public class MapboxPaint
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("raster-saturation")]
     public StoppedFloat RasterSaturation { get; set; } = new StoppedFloat() { SingleVal = 0.0f };
-
-    public static MapboxPaint Empty = new MapboxPaint();
 }
