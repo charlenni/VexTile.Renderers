@@ -7,13 +7,13 @@ using VexTile.Common.Primitives;
 using VexTile.Renderer.Common.Extensions;
 using VexTile.Renderer.Common.Interfaces;
 
-namespace VexTile.Renderer.Bitmap;
+namespace VexTile.Renderer.Picture;
 
 /// <summary>
 /// A renderer, that converts data from different tile sources with the given styles
-/// to a bitmap tile
+/// to a SkiaSharp SKPicture tile
 /// </summary>
-public class Renderer
+public class PictureRenderer
 {
     static SKRect _backgroundRect = new SKRect(0, 0, 512, 512);
 
@@ -27,7 +27,7 @@ public class Renderer
     /// <param name="sources">Tile sources to use for data</param>
     /// <param name="styles">Tile styles to use to render </param>
     /// <param name="paintFactory">Factory to create paints from tile styles</param>
-    public Renderer(IEnumerable<ITileSource> sources, IEnumerable<ITileStyle> styles, IPaintFactory paintFactory)
+    public PictureRenderer(IEnumerable<ITileSource> sources, IEnumerable<ITileStyle> styles, IPaintFactory paintFactory)
     {
         _sources = sources;
         _styles = styles;
