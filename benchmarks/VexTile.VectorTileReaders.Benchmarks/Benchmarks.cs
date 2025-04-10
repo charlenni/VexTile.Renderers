@@ -9,10 +9,10 @@ namespace VexTile.VectorTileReaders.Benchmarks
     [MemoryDiagnoser]
     public class Benchmarks
     {
-        readonly string _path = "..\\..\\..\\..\\..\\..\\..\\..\\..\\tiles\\zurich.mbtiles";
+        readonly string _path = "files\\zurich.mbtiles";
 
         ITileConverter? _tileConverter;
-        List<Tile> _tiles = new List<Tile> { new Tile(134, 166, 8), new Tile(8580, 10645, 14), new Tile(8581, 10645, 14), new Tile(8580, 10644, 14) };
+        List<Tile> _tiles = new List<Tile> { new Tile(1072, 717, 11), new Tile(8580, 5738, 14), new Tile(8581, 5738, 14), new Tile(8580, 5739, 14) };
         List<byte[]?> _data = new List<byte[]?>();
 
         [GlobalSetup]

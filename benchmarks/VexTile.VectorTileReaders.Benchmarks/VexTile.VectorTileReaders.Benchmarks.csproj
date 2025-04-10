@@ -8,6 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\..\files\osm-liberty.json" Link="files\osm-liberty.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\files\sprites\osm-liberty.json" Link="files\sprites\osm-liberty.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\files\sprites\osm-liberty.png" Link="files\sprites\osm-liberty.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\files\sprites\osm-liberty@2x.json" Link="files\sprites\osm-liberty%402x.json" />
+    <Content Include="..\..\files\sprites\osm-liberty@2x.png" Link="files\sprites\osm-liberty%402x.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="sqlite-net-pcl" />
   </ItemGroup>
@@ -16,6 +30,16 @@
     <ProjectReference Include="..\..\source\converters\VexTile.Converter.Mapbox\VexTile.TileConverter.Mapbox.csproj" />
     <ProjectReference Include="..\..\source\DataSources\VexTile.DataSource.MBTilesSQLite\VexTile.TileDataSource.csproj" />
     <ProjectReference Include="..\..\source\Readers\VexTile.Readers\VexTile.Converter.Mapbox.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="files\sprites\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\files\zurich.mbtiles" Link="files\zurich.mbtiles">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
