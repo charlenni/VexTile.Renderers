@@ -16,7 +16,7 @@ public class MapboxTileConverter : ITileConverter
         _tileConverter = new NetTopologySuite.IO.VectorTiles.Mapbox.MapboxTileReader();
     }
 
-    public async Task<VectorTile?> Convert(NetTopologySuite.IO.VectorTiles.Tiles.Tile tile, byte[]? data = null)
+    public async Task<VectorTile> Convert(NetTopologySuite.IO.VectorTiles.Tiles.Tile tile, byte[]? data = null)
     {
         if (_dataSource == null)
             return new VectorTile();
@@ -27,7 +27,7 @@ public class MapboxTileConverter : ITileConverter
 
         // Is there any data to use
         if (data == null)
-            return null;
+            return new VectorTile();
 
         Stream stream = new MemoryStream(data);
 
