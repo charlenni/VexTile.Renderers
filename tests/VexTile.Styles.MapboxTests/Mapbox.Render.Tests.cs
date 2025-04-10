@@ -1,7 +1,7 @@
-﻿using SkiaSharp;
-using VexTile.Common.Interfaces;
+﻿using VexTile.Common.Interfaces;
 using VexTile.Renderer.Common.Extensions;
 using VexTile.Renderer.Mapbox;
+using VexTile.Renderer.Picture;
 using VexTile.Style.Mapbox;
 using Xunit;
 
@@ -10,7 +10,7 @@ namespace VexTile.Styles.MapboxTests;
 public class MapboxRenderTests
 {
     readonly string _path = "files";
-    Renderer.Bitmap.Renderer _renderer;
+    PictureRenderer _renderer;
 
     public MapboxRenderTests()
     {
@@ -18,7 +18,7 @@ public class MapboxRenderTests
 
         var mapboxStyleFile = MapboxStyleFileLoader.Load(stream).Result;
         
-        _renderer = new Renderer.Bitmap.Renderer(mapboxStyleFile.Sources.Select(s => (ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites));
+        _renderer = new PictureRenderer(mapboxStyleFile.Sources.Select(s => (ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites));
     }
 
     [Theory]
