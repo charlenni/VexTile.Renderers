@@ -6,7 +6,7 @@ namespace VexTile.DataSource.Tests;
 
 public class MBTilesDataSourceTests
 {
-    readonly string _path = "..\\..\\..\\..\\..\\tests\\files\\zurich.mbtiles";
+    readonly string _path = "files\\zurich.mbtiles";
 
     [Fact]
     public void CheckMetaDataTest()
@@ -26,7 +26,7 @@ public class MBTilesDataSourceTests
     {
         var dataSource = new MbTilesTileDataSource(_path, determineZoomLevelsFromTilesTable: true, determineTileRangeFromTilesTable: true);
 
-        var tileData = await dataSource.GetTileAsync(new Tile(8580, 10645, 14));
+        var tileData = await dataSource.GetTileAsync(new Tile(8580, 5738, 14));
 
         Assert.True(tileData?.Length == 130775);
     }

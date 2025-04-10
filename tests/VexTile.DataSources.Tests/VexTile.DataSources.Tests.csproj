@@ -21,4 +21,14 @@
     <ProjectReference Include="..\..\source\VexTile.Common\VexTile.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="files\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\files\zurich.mbtiles" Link="files\zurich.mbtiles">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
