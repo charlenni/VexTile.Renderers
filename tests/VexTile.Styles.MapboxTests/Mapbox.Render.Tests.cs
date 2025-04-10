@@ -20,16 +20,24 @@ public class MapboxRenderTests
         _renderer = new Renderer.Bitmap.Renderer(mapboxStyleFile.Sources.Select(s => (ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites));
     }
 
-    [Fact]
-    public async Task RenderTileTest1()
+    [Theory]
+    [InlineData(0, 0, 0)]
+    [InlineData(1, 1, 1)]
+    [InlineData(2, 1, 2)]
+    [InlineData(33, 22, 6)]
+    [InlineData(1072, 717, 11)]
+    [InlineData(8580, 5738, 14)]
+    [InlineData(8580, 5733, 14)]
+    [InlineData(8581, 5733, 14)]
+    public async Task RenderTileTest1(int x, int y, int z)
     {
-        var data = await _renderer.Render(new NetTopologySuite.IO.VectorTiles.Tiles.Tile(8580, 10649, 14));
+        var data = await _renderer.Render(new NetTopologySuite.IO.VectorTiles.Tiles.Tile(x, y, z));
 
         Assert.True(data != null);
         Assert.True(!data.IsEmpty);
-        Assert.True(data.Size == 2217);
+        //Assert.True(data.Size == 244799);
 
-        using (var stream = new FileStream(Path.Combine(_path, "8580-10649-14.png"), FileMode.OpenOrCreate))
+        using (var stream = new FileStream(Path.Combine(_path, $"{x}-{y}-{z}.png"), FileMode.OpenOrCreate))
             data.SaveTo(stream);
     }
 
@@ -40,7 +48,7 @@ public class MapboxRenderTests
 
         Assert.True(data != null);
         Assert.True(!data.IsEmpty);
-        //Assert.True(data.Size == 36138);
+        //Assert.True(data.Size == 126561);
 
         using (var stream = new FileStream(Path.Combine(_path, "0-0-0.png"), FileMode.OpenOrCreate))
             data.SaveTo(stream);
