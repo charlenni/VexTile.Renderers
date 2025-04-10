@@ -43,8 +43,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.DataSources.Tests",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{0FC1822F-7178-4AB2-9ECA-95A023A63A46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.VectorTileReaders.Benchmarks", "benchmarks\VexTile.VectorTileReaders.Benchmarks\VexTile.VectorTileReaders.Benchmarks.csproj", "{9AEC80A5-0B39-F2CC-8E7D-74A7B8EBA13B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.TileDataSource", "source\DataSources\VexTile.DataSource.MBTilesSQLite\VexTile.TileDataSource.csproj", "{6DF0537C-8901-26A3-F93D-A50AFD62B83E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.TileConverter.Mapbox", "source\converters\VexTile.Converter.Mapbox\VexTile.TileConverter.Mapbox.csproj", "{5873DF06-BBA7-B7B0-4103-F26E96428737}"
@@ -57,29 +55,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Style.Mapbox", "sou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Styles.MapboxTests", "tests\VexTile.Styles.MapboxTests\VexTile.Styles.MapboxTests.csproj", "{48289251-046A-45A0-9573-AF3E447379A6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{E17E3474-EF41-4AC6-9AA8-56F5D5A23B7B}"
-	ProjectSection(SolutionItems) = preProject
-		tests\files\osm-liberty.json = tests\files\osm-liberty.json
-		tests\files\zurich.mbtiles = tests\files\zurich.mbtiles
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Renderer.Bitmap", "source\renderers\VexTile.Renderer.Bitmap\VexTile.Renderer.Bitmap.csproj", "{A6F8EBB8-E32A-4158-88D6-4BDEA82942EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Renderer.Picture", "source\renderers\VexTile.Renderer.Bitmap\VexTile.Renderer.Picture.csproj", "{A6F8EBB8-E32A-4158-88D6-4BDEA82942EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Renderer.Mapbox", "source\renderers\VexTile.Renderer.Mapbox\VexTile.Renderer.Mapbox.csproj", "{C6A33F35-CBD6-4276-B4C9-E20AA17A715A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Renderer.Common", "source\renderers\VexTile.Renderer.Common\VexTile.Renderer.Common.csproj", "{A8404487-BF54-4FC0-BFB7-3CDD100586B0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sprites", "Sprites", "{8FA92C21-5858-4195-A06A-14F85BAB3365}"
-	ProjectSection(SolutionItems) = preProject
-		tests\files\sprites\osm-liberty.json = tests\files\sprites\osm-liberty.json
-		tests\files\sprites\osm-liberty.png = tests\files\sprites\osm-liberty.png
-		tests\files\sprites\osm-liberty@2x.json = tests\files\sprites\osm-liberty@2x.json
-		tests\files\sprites\osm-liberty@2x.png = tests\files\sprites\osm-liberty@2x.png
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.DataSource", "source\datasources\VexTile.DataSource.Basic\VexTile.DataSource.csproj", "{2B488418-0AF7-4DE4-9A8B-B43861EBB025}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite.IO.VectorTiles.Mapbox", "..\NetTopologySuite.IO.VectorTiles\src\NetTopologySuite.IO.VectorTiles.Mapbox\NetTopologySuite.IO.VectorTiles.Mapbox.csproj", "{6F7659DF-1885-7AC7-C2AB-247714C2A8CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Benchmarks", "benchmarks\VexTile.Benchmarks\VexTile.Benchmarks.csproj", "{B5D6BB76-411C-3083-4D98-A15970257B17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,10 +93,6 @@ Global
 		{A80B8953-B2DB-6562-9097-A701508C1416}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A80B8953-B2DB-6562-9097-A701508C1416}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A80B8953-B2DB-6562-9097-A701508C1416}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9AEC80A5-0B39-F2CC-8E7D-74A7B8EBA13B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9AEC80A5-0B39-F2CC-8E7D-74A7B8EBA13B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9AEC80A5-0B39-F2CC-8E7D-74A7B8EBA13B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9AEC80A5-0B39-F2CC-8E7D-74A7B8EBA13B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6DF0537C-8901-26A3-F93D-A50AFD62B83E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6DF0537C-8901-26A3-F93D-A50AFD62B83E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DF0537C-8901-26A3-F93D-A50AFD62B83E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -151,6 +133,10 @@ Global
 		{6F7659DF-1885-7AC7-C2AB-247714C2A8CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F7659DF-1885-7AC7-C2AB-247714C2A8CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F7659DF-1885-7AC7-C2AB-247714C2A8CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5D6BB76-411C-3083-4D98-A15970257B17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5D6BB76-411C-3083-4D98-A15970257B17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5D6BB76-411C-3083-4D98-A15970257B17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5D6BB76-411C-3083-4D98-A15970257B17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,18 +148,16 @@ Global
 		{8F525597-1FBA-476F-8FB7-70397910C126} = {B93F42B4-7405-402D-BE86-0940BD932412}
 		{7F818319-AA94-4F81-B0F4-68A5D161228C} = {91E5AD39-7402-4D0A-BB0F-9B21C48283F9}
 		{A80B8953-B2DB-6562-9097-A701508C1416} = {60740B31-4437-4B25-B266-E08E9CB793C2}
-		{9AEC80A5-0B39-F2CC-8E7D-74A7B8EBA13B} = {0FC1822F-7178-4AB2-9ECA-95A023A63A46}
 		{6DF0537C-8901-26A3-F93D-A50AFD62B83E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5873DF06-BBA7-B7B0-4103-F26E96428737} = {3DC520CC-855B-46B8-9679-752FA2F6A9AA}
 		{2371704E-ABF8-9354-A4E6-438A74AD734D} = {60740B31-4437-4B25-B266-E08E9CB793C2}
 		{AFB87CA1-C6F6-E60B-46CA-43A5FE94F623} = {1E286862-A454-4628-A7FC-68D369592C08}
 		{48289251-046A-45A0-9573-AF3E447379A6} = {60740B31-4437-4B25-B266-E08E9CB793C2}
-		{E17E3474-EF41-4AC6-9AA8-56F5D5A23B7B} = {60740B31-4437-4B25-B266-E08E9CB793C2}
 		{A6F8EBB8-E32A-4158-88D6-4BDEA82942EB} = {E18861F9-FDA0-45AE-92FD-CA6FB4A02E36}
 		{C6A33F35-CBD6-4276-B4C9-E20AA17A715A} = {E18861F9-FDA0-45AE-92FD-CA6FB4A02E36}
 		{A8404487-BF54-4FC0-BFB7-3CDD100586B0} = {E18861F9-FDA0-45AE-92FD-CA6FB4A02E36}
-		{8FA92C21-5858-4195-A06A-14F85BAB3365} = {60740B31-4437-4B25-B266-E08E9CB793C2}
 		{2B488418-0AF7-4DE4-9A8B-B43861EBB025} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{B5D6BB76-411C-3083-4D98-A15970257B17} = {0FC1822F-7178-4AB2-9ECA-95A023A63A46}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B7E5C58-5DE8-4E43-BADC-70CFCD54D996}
