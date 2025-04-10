@@ -124,6 +124,8 @@ public class MbTilesTileDataSource : ITileDataSource
         if (!IsTileIndexValid(tile))
             return null;
 
+        tile = Schema.YAxis == YAxis.TMS ? tile.InvertY() : tile;
+
         byte[] result;
 
         try
