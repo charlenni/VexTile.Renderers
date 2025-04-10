@@ -7,17 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Files\Sprites\osm-liberty.json" />
-    <None Remove="Files\Sprites\osm-liberty.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Files\Sprites\osm-liberty.json">
+    <Content Include="..\..\files\osm-liberty.json" Link="files\osm-liberty.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Files\Sprites\osm-liberty.png">
+    </Content>
+    <Content Include="..\..\files\sprites\osm-liberty.json" Link="files\sprites\osm-liberty.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
+    <Content Include="..\..\files\sprites\osm-liberty.png" Link="files\sprites\osm-liberty.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\files\sprites\osm-liberty@2x.json" Link="files\sprites\osm-liberty%402x.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\files\sprites\osm-liberty@2x.png" Link="files\sprites\osm-liberty%402x.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -36,16 +40,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Files\osm-liberty.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Files\Sprites\osm-liberty%402x.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Files\Sprites\osm-liberty%402x.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Files\zurich.mbtiles">
+    <Folder Include="files\sprites\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\files\LICENSE.md" Link="files\LICENSE.md" />
+    <None Include="..\..\files\zurich.mbtiles" Link="files\zurich.mbtiles">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
