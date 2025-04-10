@@ -41,10 +41,10 @@ public class Renderer
         }
     }
 
-    public async Task<SKData> Render(Tile tile)
+    public async Task<SKPicture> Render(Tile tile)
     {
-        var bitmap = new SKBitmap(512, 512, SKColorType.Rgba8888, SKAlphaType.Opaque);
-        var canvas = new SKCanvas(bitmap);
+        var pictureRecorder = new SKPictureRecorder();
+        var canvas = pictureRecorder.BeginRecording(_backgroundRect);
         var tiles = new Dictionary<string, object>();
 
         // Get tiles from all sources
@@ -106,8 +106,7 @@ public class Renderer
                 continue;
         }
 
-        // Return ready rendered bitmap
-        return bitmap.Encode(SKEncodedImageFormat.Png, 100);
+        return pictureRecorder.EndRecording();
     }
 
     private static void RenderAsBackground(SKCanvas canvas, EvaluationContext context, ITileStyle style, IPaint paint)
