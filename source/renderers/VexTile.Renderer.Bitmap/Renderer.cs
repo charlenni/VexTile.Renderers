@@ -149,15 +149,27 @@ public class Renderer
 
         var skPaints = paint.CreateSKPaint(context);
 
-        // Draw features that belong to this style
-        foreach (var feature in features)
+        if (style.StyleType == "fill")
         {
-            var path = feature.ToSKPath();
+            // Draw features that belong to a fill style (draw path by path)
+            foreach (var feature in features)
+            {
+                var path = feature.ToSKPath();
+
+                foreach (var skPaint in skPaints)
+                    canvas.DrawPath(path, skPaint);
+            }
+        }
+        else
+        {
+            var path = new SKPath();
+
+            // Draw features that belong to a line style (add path by path and draw them at the end together)
+            foreach (var feature in features)
+                path.AddPath(feature.ToSKPath());
 
             foreach (var skPaint in skPaints)
-            {
                 canvas.DrawPath(path, skPaint);
-            }
         }
     }
 
