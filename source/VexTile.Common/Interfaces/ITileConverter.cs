@@ -11,5 +11,5 @@ public interface ITileConverter
     /// <param name="tile">Tile to load and convert</param>
     /// <param name="data">Data, if there is already one</param>
     /// <returns>Vector tile</returns>
-    Task<VectorTile?> Convert(Tile tile, byte[]? data = null);
+    Task<VectorTile> Convert(Tile tile, byte[]? data = null);
 }
