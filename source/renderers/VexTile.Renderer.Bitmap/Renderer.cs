@@ -142,7 +142,7 @@ public class Renderer
         if (layer == null)
             return;
 
-        var features = layer.Features.Where(f => style.Filter.Evaluate(f));
+        var features = layer.Features.Where((f) => style.Filter.Evaluate(f));
 
         if (features == null || features.Count() == 0)
             return;
