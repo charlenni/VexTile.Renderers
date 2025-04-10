@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\files\osm-liberty.json" Link="files\osm-liberty.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\files\sprites\osm-liberty.json" Link="files\sprites\osm-liberty.json" />
+    <EmbeddedResource Include="..\..\files\sprites\osm-liberty.png" Link="files\sprites\osm-liberty.png" />
+    <EmbeddedResource Include="..\..\files\sprites\osm-liberty@2x.json" Link="files\sprites\osm-liberty%402x.json" />
+    <EmbeddedResource Include="..\..\files\sprites\osm-liberty@2x.png" Link="files\sprites\osm-liberty%402x.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="sqlite-net-pcl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\source\converters\VexTile.Converter.Mapbox\VexTile.TileConverter.Mapbox.csproj" />
+    <ProjectReference Include="..\..\source\datasources\VexTile.DataSource.Basic\VexTile.DataSource.csproj" />
+    <ProjectReference Include="..\..\source\DataSources\VexTile.DataSource.MBTilesSQLite\VexTile.TileDataSource.csproj" />
+    <ProjectReference Include="..\..\source\renderers\VexTile.Renderer.Bitmap\VexTile.Renderer.Picture.csproj" />
+    <ProjectReference Include="..\..\source\renderers\VexTile.Renderer.Common\VexTile.Renderer.Common.csproj" />
+    <ProjectReference Include="..\..\source\renderers\VexTile.Renderer.Mapbox\VexTile.Renderer.Mapbox.csproj" />
+    <ProjectReference Include="..\..\source\styles\VexTile.Style.Mapbox\VexTile.Style.Mapbox.csproj" />
+    <ProjectReference Include="..\..\source\VexTile.Common\VexTile.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="files\sprites\" />
+    <Folder Include="files\sprites\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\files\LICENSE.md" Link="files\LICENSE.md" />
+    <None Include="..\..\files\zurich.mbtiles" Link="files\zurich.mbtiles">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
