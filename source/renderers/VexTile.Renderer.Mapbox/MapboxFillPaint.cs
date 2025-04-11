@@ -26,7 +26,7 @@ public class MapboxFillPaint : MapboxBasePaint
         line.SetFixColor(new SKColor(0, 0, 0, 255));
         line.SetFixOpacity(1);
         line.SetFixStyle(SKPaintStyle.Stroke);
-        line.SetFixStrokeWidth(1);
+        line.SetFixStrokeWidth(0);
 
         // If we don't have a paint, than there isn't anything that we could do
         if (paint == null)

@@ -156,8 +156,13 @@ public class PictureRenderer
             {
                 var path = feature.ToSKPath();
 
+                canvas.Save();
+                canvas.ClipPath(path);
+
                 foreach (var skPaint in skPaints)
                     canvas.DrawPath(path, skPaint);
+
+                canvas.Restore();
             }
         }
         else
