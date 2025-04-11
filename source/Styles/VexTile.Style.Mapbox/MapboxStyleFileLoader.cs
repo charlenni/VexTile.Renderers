@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using VexTile.DataSource;
+using VexTile.ByteDataSource;
 
 namespace VexTile.Style.Mapbox;
 
@@ -40,8 +40,8 @@ public class MapboxStyleFileLoader
     {
         Dictionary<string, MapboxSprite>? mapboxSprites;
 
-        var bitmapBytes = await DefaultDataSource.GetBytesAsync(spriteFile + ".png");
-        var jsonBytes = await DefaultDataSource.GetBytesAsync(spriteFile + ".json");
+        var bitmapBytes = await DefaultByteDataSource.GetBytesAsync(spriteFile + ".png");
+        var jsonBytes = await DefaultByteDataSource.GetBytesAsync(spriteFile + ".json");
         var serializer = new JsonSerializer();
 
         using (var stream = new MemoryStream(jsonBytes))

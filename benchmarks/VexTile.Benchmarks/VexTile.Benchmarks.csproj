@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\source\converters\VexTile.Converter.Mapbox\VexTile.TileConverter.Mapbox.csproj" />
-    <ProjectReference Include="..\..\source\datasources\VexTile.DataSource.Basic\VexTile.DataSource.csproj" />
+    <ProjectReference Include="..\..\source\datasources\VexTile.DataSource.Basic\VexTile.ByteDataSource.csproj" />
     <ProjectReference Include="..\..\source\DataSources\VexTile.DataSource.MBTilesSQLite\VexTile.TileDataSource.csproj" />
     <ProjectReference Include="..\..\source\renderers\VexTile.Renderer.Bitmap\VexTile.Renderer.Picture.csproj" />
     <ProjectReference Include="..\..\source\renderers\VexTile.Renderer.Common\VexTile.Renderer.Common.csproj" />

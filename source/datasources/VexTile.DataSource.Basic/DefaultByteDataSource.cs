@@ -3,9 +3,9 @@ using System.Reflection;
 using System.Text;
 using VexTile.DataSource.Basic.Extensions;
 
-namespace VexTile.DataSource;
+namespace VexTile.ByteDataSource;
 
-public static class DefaultDataSource
+public static class DefaultByteDataSource
 {
     public const string EmbeddedScheme = "embedded";
     public const string FileScheme = "file";

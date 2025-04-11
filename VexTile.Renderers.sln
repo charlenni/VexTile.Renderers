@@ -61,7 +61,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Renderer.Mapbox", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.Renderer.Common", "source\renderers\VexTile.Renderer.Common\VexTile.Renderer.Common.csproj", "{A8404487-BF54-4FC0-BFB7-3CDD100586B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.DataSource", "source\datasources\VexTile.DataSource.Basic\VexTile.DataSource.csproj", "{2B488418-0AF7-4DE4-9A8B-B43861EBB025}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VexTile.ByteDataSource", "source\datasources\VexTile.DataSource.Basic\VexTile.ByteDataSource.csproj", "{2B488418-0AF7-4DE4-9A8B-B43861EBB025}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTopologySuite.IO.VectorTiles.Mapbox", "..\NetTopologySuite.IO.VectorTiles\src\NetTopologySuite.IO.VectorTiles.Mapbox\NetTopologySuite.IO.VectorTiles.Mapbox.csproj", "{6F7659DF-1885-7AC7-C2AB-247714C2A8CA}"
 EndProject
