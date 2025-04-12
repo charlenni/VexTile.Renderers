@@ -87,9 +87,12 @@ public class PictureRenderer
                     RenderTileAsRaster(canvas, context, (byte[])tiles[style.Source], style, _paints[style]);
                     break;
                 case "fill":
+                    if (tiles[style.Source] != null)
+                        RenderTileAsVectorFill(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+                    break;
                 case "line":
                     if (tiles[style.Source] != null)
-                        RenderTileAsVector(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+                        RenderTileAsVectorLine(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
                     break;
                 case "symbol":
                 case "fill-extrusion":
@@ -135,7 +138,7 @@ public class PictureRenderer
         }
     }
 
-    private static void RenderTileAsVector(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
+    private static void RenderTileAsVectorFill(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
     {
         var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
 
@@ -149,33 +152,43 @@ public class PictureRenderer
 
         var skPaints = paint.CreateSKPaint(context);
 
-        if (style.StyleType == "fill")
+        // Draw features that belong to a fill style (draw path by path)
+        foreach (var feature in features)
         {
-            // Draw features that belong to a fill style (draw path by path)
-            foreach (var feature in features)
-            {
-                var path = feature.ToSKPath();
+            var path = feature.ToSKPath();
 
-                canvas.Save();
-                canvas.ClipPath(path);
-
-                foreach (var skPaint in skPaints)
-                    canvas.DrawPath(path, skPaint);
-
-                canvas.Restore();
-            }
-        }
-        else
-        {
-            var path = new SKPath();
-
-            // Draw features that belong to a line style (add path by path and draw them at the end together)
-            foreach (var feature in features)
-                path.AddPath(feature.ToSKPath());
+            canvas.Save();
+            canvas.ClipPath(path);
 
             foreach (var skPaint in skPaints)
                 canvas.DrawPath(path, skPaint);
+
+            canvas.Restore();
         }
+    }
+
+    private static void RenderTileAsVectorLine(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
+    {
+        var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
+
+        if (layer == null)
+            return;
+
+        var features = layer.Features.Where((f) => style.Filter.Evaluate(f));
+
+        if (features == null || features.Count() == 0)
+            return;
+
+        var skPaints = paint.CreateSKPaint(context);
+
+        var path = new SKPath();
+
+        // Draw features that belong to a line style (add path by path and draw them at the end together)
+        foreach (var feature in features)
+            path.AddPath(feature.ToSKPath());
+
+        foreach (var skPaint in skPaints)
+            canvas.DrawPath(path, skPaint);
     }
 
     private static bool IsVisible(int zoom, ITileStyle style)
