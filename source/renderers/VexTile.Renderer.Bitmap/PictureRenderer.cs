@@ -182,6 +182,7 @@ public class PictureRenderer
     {
         if (!style.Visible)
             return false;
+        // Unset zoom values are per default -1. So, if zoom value is bigger than -1 it is set by style file.
         if (style.MinZoom > -1 && style.MinZoom > zoom)
             return false;
         if (style.MaxZoom > -1 && style.MaxZoom <= zoom)
