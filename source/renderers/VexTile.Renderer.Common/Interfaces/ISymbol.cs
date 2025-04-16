@@ -2,5 +2,5 @@
 
 public interface ISymbol
 {
-    uint TileId { get; }
+    ulong TileId { get; }
 }
