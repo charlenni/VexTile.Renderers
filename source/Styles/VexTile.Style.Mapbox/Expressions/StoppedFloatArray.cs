@@ -69,7 +69,7 @@ public class StoppedFloatArray : IExpression
 
     public object? Evaluate(EvaluationContext ctx)
     {
-        return Evaluate(ctx.Zoom, StopsType.Exponential);
+        return (float[]?)Evaluate(ctx.Zoom, StopsType.Exponential);
     }
 
     public object? PossibleOutputs()

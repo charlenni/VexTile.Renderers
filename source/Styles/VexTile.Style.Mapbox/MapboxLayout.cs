@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using VexTile.Common.Enums;
 using VexTile.Common.Primitives;
+using VexTile.Style.Mapbox.Enums;
 using VexTile.Style.Mapbox.Expressions;
 using VexTile.Style.Mapbox.Json.Converter;
 
@@ -37,8 +38,9 @@ public class MapboxLayout
     [JsonProperty("icon-allow-overlap")]
     public bool IconAllowOverlap { get; set; } = false;
 
+    [JsonConverter(typeof(EnumConverter<Anchor>))]
     [JsonProperty("icon-anchor")]
-    public string IconAnchor { get; set; } = "center";
+    public Anchor IconAnchor { get; set; } = Anchor.Center;
 
     [JsonConverter(typeof(StoppedColorConverter))]
     [JsonProperty("icon-color")]
@@ -93,8 +95,9 @@ public class MapboxLayout
     [JsonProperty("symbol-placement")]
     public StoppedEnum<SymbolPlacement> SymbolPlacement { get; set; } = new StoppedEnum<SymbolPlacement> { SingleVal = Common.Enums.SymbolPlacement.Point };
 
+    [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("symbol-sort-key")]
-    public float? SymbolSortKey { get; set; }
+    public StoppedFloat? SymbolSortKey { get; set; }
 
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("symbol-spacing")]
@@ -103,14 +106,16 @@ public class MapboxLayout
     [JsonProperty("symbol-z-elevate")]
     public bool SymbolZElevate { get; set; } = false;
 
+    [JsonConverter(typeof(EnumConverter<SymbolZOrder>))]
     [JsonProperty("symbol-z-order")]
-    public string SymbolZOrder { get; set; } = "auto";
+    public SymbolZOrder SymbolZOrder { get; set; } = SymbolZOrder.Auto;
 
     [JsonProperty("text-allow-overlap")]
     public bool TextAllowOverlap { get; set; } = false;
 
+    [JsonConverter(typeof(EnumConverter<Anchor>))]
     [JsonProperty("text-anchor")]
-    public string TextAnchor { get; set; } = "center";
+    public Anchor TextAnchor { get; set; } = Anchor.Center;
 
     [JsonProperty("text-field")]
     public string TextField { get; set; } = string.Empty;

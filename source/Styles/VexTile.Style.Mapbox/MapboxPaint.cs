@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using VexTile.Common.Primitives;
+using VexTile.Style.Mapbox.Enums;
 using VexTile.Style.Mapbox.Expressions;
 using VexTile.Style.Mapbox.Json.Converter;
 
@@ -112,17 +113,21 @@ public class MapboxPaint
     [JsonProperty("icon-color")]
     public StoppedColor IconColor { get; set; } = new StoppedColor { SingleVal = Color.Black };
 
+    [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("icon-color-brightness-max")]
-    public float IconColorBrightnessMax { get; set; } = 1.0f;
+    public StoppedFloat IconColorBrightnessMax { get; set; } = new StoppedFloat { SingleVal = 1.0f };
 
+    [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("icon-color-brightness-min")]
-    public float IconColorBrightnessMin { get; set; } = 0.0f;
+    public StoppedFloat IconColorBrightnessMin { get; set; } = new StoppedFloat { SingleVal = 0.0f };
 
+    [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("icon-color-contrast")]
-    public float IconColorContrast { get; set; } = 0.0f;
+    public StoppedFloat IconColorContrast { get; set; } = new StoppedFloat { SingleVal = 0.0f };
 
+    [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("icon-color-saturation")]
-    public float IconColorSaturation { get; set; } = 0.0f;
+    public StoppedFloat IconColorSaturation { get; set; } = new StoppedFloat { SingleVal = 0.0f };
 
     [JsonConverter(typeof(StoppedFloatConverter))]
     [JsonProperty("icon-emissive-strength")]
@@ -156,8 +161,9 @@ public class MapboxPaint
     [JsonProperty("icon-translate")]
     public StoppedFloatArray IconTranslate { get; set; } = new StoppedFloatArray() { SingleVal = [0, 0] };
 
+    [JsonConverter(typeof(StoppedEnumConverter<MapAlignment>))]
     [JsonProperty("icon-translate-anchor")]
-    public string IconTranslateAnchor { get; set; } = "map";
+    public StoppedEnum<MapAlignment> IconTranslateAnchor { get; set; } = new StoppedEnum<MapAlignment> { SingleVal = MapAlignment.Map };
 
     [JsonConverter(typeof(StoppedColorConverter))]
     [JsonProperty("text-color")]
