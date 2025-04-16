@@ -81,22 +81,23 @@ public class PictureRenderer
 
             switch (style.StyleType)
             {
-                case "background":
+                case StyleType.Background:
                     RenderAsBackground(canvas, context, style, _paints[style]);
                     break;
-                case "raster":
-                    RenderTileAsRaster(canvas, context, (byte[])tiles[style.Source], style, _paints[style]);
-                    break;
-                case "fill":
+                case StyleType.Raster:
                     if (tiles[style.Source] != null)
-                        RenderTileAsVectorFill(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+                        RenderTileAsRaster(canvas, context, (byte[])tiles[style.Source], style, _paints[style]);
                     break;
-                case "line":
+                case StyleType.Fill:
                     if (tiles[style.Source] != null)
-                        RenderTileAsVectorLine(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+                        RenderTilePartAsVectorFill(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
                     break;
-                case "symbol":
-                case "fill-extrusion":
+                case StyleType.Line:
+                    if (tiles[style.Source] != null)
+                        RenderTilePartAsVectorLine(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+                    break;
+                case StyleType.Symbol:
+                case StyleType.FillExtrusion:
                     break;
                 default:
                     throw new NotImplementedException($"Style with type '{style.StyleType}' is unknown");
@@ -106,8 +107,20 @@ public class PictureRenderer
         // Draw symbols in revers order, because last style layer is the top most layer
         foreach (var style in _styles.Reverse())
         {
-            if (!IsVisible(tile.Zoom, style))
+            if (style.StyleType != StyleType.Symbol)
+            {
                 continue;
+            }
+
+            if (!IsVisible(tile.Zoom, style))
+            {
+                continue;
+            }
+
+            if (tiles[style.Source] != null)
+            {
+                RenderTilePartAsSymbol(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+            }
         }
 
         return pictureRecorder.EndRecording();
@@ -139,7 +152,7 @@ public class PictureRenderer
         }
     }
 
-    private static void RenderTileAsVectorFill(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
+    private static void RenderTilePartAsVectorFill(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
     {
         var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
 
@@ -168,7 +181,7 @@ public class PictureRenderer
         }
     }
 
-    private static void RenderTileAsVectorLine(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
+    private static void RenderTilePartAsVectorLine(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
     {
         var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
 
@@ -190,6 +203,15 @@ public class PictureRenderer
 
         foreach (var skPaint in skPaints)
             canvas.DrawPath(path, skPaint);
+    }
+
+    private static void RenderTilePartAsSymbol(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
+    {
+        if ((MapboxTileStyle)style).Layout. StyleType == StyleType.
+        var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
+
+        if (layer == null)
+            return;
     }
 
     private static bool IsVisible(int zoom, ITileStyle style)
