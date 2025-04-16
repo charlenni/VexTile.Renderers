@@ -11,7 +11,7 @@ using VexTile.Style.Mapbox.Expressions;
 
 namespace VexTile.Renderer.Mapbox;
 
-public class MapboxIconPointSymbol : MapboxSymbol
+public class MapboxPointSymbol : MapboxSymbol
 {
     bool _isIcon;
     bool _isText;
@@ -37,7 +37,7 @@ public class MapboxIconPointSymbol : MapboxSymbol
     StoppedFloatArray _iconTranslate;
     StoppedEnum<MapAlignment> _iconTranslateAnchor;
 
-    public MapboxIconPointSymbol(Tile tile, Coordinate point, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature) : base(tile)
+    public MapboxPointSymbol(Tile tile, Point point, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature) : base(tile)
     {
         context.Feature = feature;
 
