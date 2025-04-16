@@ -136,7 +136,7 @@ public class PictureRenderer
 
             if (tiles[style.Source] != null)
             {
-                symbolLayers.Add(style.Name, RenderTilePartAsSymbol(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style], _symbolFactory));
+                symbolLayers.Add(style.Name, RenderTilePartAsSymbol(canvas, tile.Id, context, (VectorTile)tiles[style.Source], style, _paints[style], _symbolFactory));
             }
         }
 
@@ -226,7 +226,7 @@ public class PictureRenderer
         }
     }
 
-    private static IEnumerable<ISymbol> RenderTilePartAsSymbol(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint, ISymbolFactory symbolFactory)
+    private static IEnumerable<ISymbol> RenderTilePartAsSymbol(SKCanvas canvas, ulong tileId, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint, ISymbolFactory symbolFactory)
     {
         var result = new List<ISymbol>();
 
@@ -237,7 +237,7 @@ public class PictureRenderer
 
         foreach (var feature in features)
         {
-            var symbol = symbolFactory.CreateSymbol(style, context, feature);
+            var symbol = symbolFactory.CreateSymbol(tileId, style, context, feature);
 
             if (symbol != null)
             {
