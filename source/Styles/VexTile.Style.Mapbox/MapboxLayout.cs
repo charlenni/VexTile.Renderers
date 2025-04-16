@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using VexTile.Common.Enums;
 using VexTile.Common.Primitives;
 using VexTile.Style.Mapbox.Expressions;
 using VexTile.Style.Mapbox.Json.Converter;
@@ -88,9 +89,9 @@ public class MapboxLayout
     [JsonProperty("symbol-avoid-edges")]
     public bool SymbolAvoidEdges { get; set; } = false;
 
-    [JsonConverter(typeof(StoppedStringConverter))]
+    [JsonConverter(typeof(StoppedEnumConverter<SymbolPlacement>))]
     [JsonProperty("symbol-placement")]
-    public StoppedString SymbolPlacement { get; set; } = new StoppedString { SingleVal = "point" };
+    public StoppedEnum<SymbolPlacement> SymbolPlacement { get; set; } = new StoppedEnum<SymbolPlacement> { SingleVal = Common.Enums.SymbolPlacement.Point };
 
     [JsonProperty("symbol-sort-key")]
     public float? SymbolSortKey { get; set; }
