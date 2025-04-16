@@ -14,7 +14,7 @@ public class MapboxLinePaint : MapboxBasePaint
         var layout = mapboxStyle.Layout;
         var paint = mapboxStyle.Paint;
 
-        var line = new MapboxPaint(mapboxStyle.Id);
+        var line = new MapboxPaint(mapboxStyle.Name);
 
         // Set defaults
         line.SetFixColor(new SKColor(0, 0, 0, 255));

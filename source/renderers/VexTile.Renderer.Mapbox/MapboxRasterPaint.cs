@@ -13,7 +13,7 @@ public class MapboxRasterPaint : MapboxBasePaint
         // Raster has only properties in Paint, no in Layout
         var paint = mapboxStyle.Paint;
 
-        var brush = new MapboxPaint(mapboxStyle.Id);
+        var brush = new MapboxPaint(mapboxStyle.Name);
 
         brush.SetFixOpacity(1);
 

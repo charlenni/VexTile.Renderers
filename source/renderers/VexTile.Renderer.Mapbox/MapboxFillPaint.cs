@@ -16,8 +16,8 @@ public class MapboxFillPaint : MapboxBasePaint
 
         var hasOutline = false;
 
-        var area = new MapboxPaint(mapboxStyle.Id);
-        var line = new MapboxPaint(mapboxStyle.Id);
+        var area = new MapboxPaint(mapboxStyle.Name);
+        var line = new MapboxPaint(mapboxStyle.Name);
 
         // Set defaults
         area.SetFixColor(new SKColor(0, 0, 0, 255));
