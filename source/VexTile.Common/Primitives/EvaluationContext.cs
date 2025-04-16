@@ -15,12 +15,15 @@ public class EvaluationContext
 
     public AttributesTable? Attributes { get; set; }
 
-    public EvaluationContext(float? zoom, float scale = 1, float rotation = 0, AttributesTable? attributes = null)
+    public IFeature Feature { get; set; }
+
+    public EvaluationContext(float? zoom, float scale = 1, float rotation = 0, AttributesTable? attributes = null, IFeature feature = null)
     {
         Zoom = zoom;
         Scale = scale;
         Rotation = rotation;
         Attributes = attributes;
+        Feature = feature;
     }
 
     public override bool Equals(object? other) => other is EvaluationContext context && Equals(context);
