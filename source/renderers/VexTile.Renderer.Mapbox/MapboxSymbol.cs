@@ -20,6 +20,8 @@ public class MapboxSymbol : ISymbol
 
     public double SortOrder { get; internal set; }
 
+    public bool AllowOthers { get; internal set; }
+
     internal void CreateCommon(MapboxTileStyle style, EvaluationContext context)
     {
         switch (style.Layout.SymbolZOrder)
