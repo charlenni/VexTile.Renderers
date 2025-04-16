@@ -71,6 +71,7 @@ public class PictureRenderer
         }
 
         var context = new EvaluationContext(tile.Zoom);
+        var symbols = new Dictionary<string, List<object>>();
 
         // Draw tiles data style after style
         foreach (var style in _styles)
