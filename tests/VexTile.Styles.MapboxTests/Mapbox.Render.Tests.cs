@@ -32,7 +32,7 @@ public class MapboxRenderTests
     [InlineData(8581, 5733, 14)]
     public async Task RenderTilePngTest(int x, int y, int z)
     {
-        var picture = await _renderer.Render(new NetTopologySuite.IO.VectorTiles.Tiles.Tile(x, y, z));
+        (var picture, var symbols) = await _renderer.Render(new NetTopologySuite.IO.VectorTiles.Tiles.Tile(x, y, z));
 
         Assert.True(picture != null);
 
@@ -53,7 +53,7 @@ public class MapboxRenderTests
     [InlineData(8581, 5733, 14)]
     public async Task RenderTileSvgTest(int x, int y, int z)
     {
-        var picture = await _renderer.Render(new NetTopologySuite.IO.VectorTiles.Tiles.Tile(x, y, z));
+        (var picture, var symbols) = await _renderer.Render(new NetTopologySuite.IO.VectorTiles.Tiles.Tile(x, y, z));
 
         Assert.True(picture != null);
 
