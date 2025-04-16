@@ -187,7 +187,7 @@ public class PictureRenderer
         var skPaints = paint.CreateSKPaint(context);
 
         // Draw features that belong to a fill style (draw path by path)
-        foreach (var feature in features)
+        foreach (var feature in features!)
         {
             var path = feature.ToSKPath();
 
@@ -215,7 +215,7 @@ public class PictureRenderer
         var path = new SKPath();
 
         // Draw features that belong to a line style (add path by path and draw them at the end together)
-        foreach (var feature in features)
+        foreach (var feature in features!)
         {
             path.AddPath(feature.ToSKPath());
         }
@@ -235,7 +235,7 @@ public class PictureRenderer
             return result;
         }
 
-        foreach (var feature in features)
+        foreach (var feature in features!)
         {
             var symbol = symbolFactory.CreateSymbol(tileId, style, context, feature);
 
