@@ -20,11 +20,11 @@ namespace VexTile.Styles.MapboxTests
             Assert.True(mapboxStyleFile.Sources["openmaptiles"].SourceType == Common.Enums.SourceType.Vector);
             Assert.True(mapboxStyleFile.Sources["natural_earth_shaded_relief"].SourceType == Common.Enums.SourceType.Raster);
             Assert.True(mapboxStyleFile.Layers.Length == 102);
-            Assert.True(mapboxStyleFile.Layers[0].Id == "background");
-            Assert.True(mapboxStyleFile.Layers[0].StyleType == "background");
-            Assert.True(mapboxStyleFile.Layers[14].Id == "water");
+            Assert.True(mapboxStyleFile.Layers[0].Name == "background");
+            Assert.True(mapboxStyleFile.Layers[0].StyleType == Common.Enums.StyleType.Background);
+            Assert.True(mapboxStyleFile.Layers[14].Name == "water");
             Assert.True(mapboxStyleFile.Layers[14].SourceLayer == "water");
-            Assert.True(mapboxStyleFile.Layers[14].StyleType == "fill");
+            Assert.True(mapboxStyleFile.Layers[14].StyleType == Common.Enums.StyleType.Fill);
             Assert.True(mapboxStyleFile.Layers[14].Source == "openmaptiles");
         }
 
