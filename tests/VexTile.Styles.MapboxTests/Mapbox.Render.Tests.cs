@@ -18,7 +18,7 @@ public class MapboxRenderTests
 
         var mapboxStyleFile = MapboxStyleFileLoader.Load(stream).Result;
         
-        _renderer = new PictureRenderer(mapboxStyleFile.Sources.Select(s => (ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites));
+        _renderer = new PictureRenderer(mapboxStyleFile.Sources.Select(s => (ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites), new MapboxSymbolFactory(mapboxStyleFile.Sprites));
     }
 
     [Theory]
