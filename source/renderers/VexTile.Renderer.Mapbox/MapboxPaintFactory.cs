@@ -1,4 +1,5 @@
 ﻿using SkiaSharp;
+using VexTile.Common.Enums;
 using VexTile.Common.Interfaces;
 using VexTile.Renderer.Common.Interfaces;
 using VexTile.Style.Mapbox;
@@ -29,23 +30,16 @@ namespace VexTile.Renderer.Mapbox
 
         public IPaint CreatePaint(ITileStyle style)
         {
-            switch (style.StyleType)
+            return style.StyleType switch
             {
-                case "background":
-                    return new MapboxBackgroundPaint(style, _spriteFactory);
-                case "raster":
-                    return new MapboxRasterPaint(style, _spriteFactory);
-                case "fill":
-                    return new MapboxFillPaint(style, _spriteFactory);
-                case "line":
-                    return new MapboxLinePaint(style, _spriteFactory);
-                case "symbol":
-                    return null;
-                case "fill-extrusion":
-                    return null;
-                default:
-                    throw new NotImplementedException($"Style with type '{style.StyleType}' is unknown");
-            }
+                StyleType.Background => new MapboxBackgroundPaint(style, _spriteFactory),
+                StyleType.Raster => new MapboxRasterPaint(style, _spriteFactory),
+                StyleType.Fill => new MapboxFillPaint(style, _spriteFactory),
+                StyleType.Line => new MapboxLinePaint(style, _spriteFactory),
+                StyleType.Symbol => null,
+                StyleType.FillExtrusion => null,
+                _ => throw new NotImplementedException($"Style with type '{style.StyleType}' is unknown")
+            };
         }
     }
 }
