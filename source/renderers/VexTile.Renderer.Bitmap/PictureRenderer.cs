@@ -1,4 +1,5 @@
-﻿using NetTopologySuite.IO.VectorTiles;
+﻿using NetTopologySuite.Features;
+using NetTopologySuite.IO.VectorTiles;
 using NetTopologySuite.IO.VectorTiles.Tiles;
 using SkiaSharp;
 using VexTile.Common.Enums;
@@ -20,17 +21,20 @@ public class PictureRenderer
     IEnumerable<ITileSource> _sources;
     IEnumerable<ITileStyle> _styles;
     Dictionary<ITileStyle, IPaint> _paints;
-    
+    ISymbolFactory _symbolFactory;
+
     /// <summary>
     /// Create renderer
     /// </summary>
     /// <param name="sources">Tile sources to use for data</param>
     /// <param name="styles">Tile styles to use to render </param>
     /// <param name="paintFactory">Factory to create paints from tile styles</param>
-    public PictureRenderer(IEnumerable<ITileSource> sources, IEnumerable<ITileStyle> styles, IPaintFactory paintFactory)
+    /// <param name="symbolFactory">Factory to create symbols from tile styles and features</param>
+    public PictureRenderer(IEnumerable<ITileSource> sources, IEnumerable<ITileStyle> styles, IPaintFactory paintFactory, ISymbolFactory symbolFactory)
     {
         _sources = sources;
         _styles = styles;
+        _symbolFactory = symbolFactory;
 
         _paints = new Dictionary<ITileStyle, IPaint>(styles.Count());
 
@@ -41,7 +45,7 @@ public class PictureRenderer
         }
     }
 
-    public async Task<SKPicture> Render(Tile tile)
+    public async Task<(SKPicture, Dictionary<string, IEnumerable<ISymbol>>)> Render(Tile tile)
     {
         var pictureRecorder = new SKPictureRecorder();
         var canvas = pictureRecorder.BeginRecording(_backgroundRect);
@@ -56,7 +60,7 @@ public class PictureRenderer
             {
                 binaryTileData = await source.DataSource.GetTileAsync(tile);
             }
-#
+
             if (binaryTileData == null)
             {
                 continue;
@@ -75,7 +79,6 @@ public class PictureRenderer
         }
 
         var context = new EvaluationContext(tile.Zoom);
-        var symbols = new Dictionary<string, List<object>>();
 
         // Draw tiles data style after style
         foreach (var style in _styles)
@@ -116,6 +119,8 @@ public class PictureRenderer
             }
         }
 
+        var symbolLayers = new Dictionary<string, IEnumerable<ISymbol>>();
+
         // Draw symbols in revers order, because last style layer is the top most layer
         foreach (var style in _styles.Reverse())
         {
@@ -131,11 +136,11 @@ public class PictureRenderer
 
             if (tiles[style.Source] != null)
             {
-                RenderTilePartAsSymbol(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+                symbolLayers.Add(style.Name, RenderTilePartAsSymbol(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style], _symbolFactory));
             }
         }
 
-        return pictureRecorder.EndRecording();
+        return (pictureRecorder.EndRecording(), symbolLayers);
     }
 
     private static void RenderAsBackground(SKCanvas canvas, EvaluationContext context, ITileStyle style, IPaint paint)
@@ -174,14 +179,7 @@ public class PictureRenderer
     {
         var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
 
-        if (layer == null)
-        {
-            return;
-        }
-
-        var features = layer.Features.Where((f) => style.Filter.Evaluate(f));
-
-        if (features == null || features.Count() == 0)
+        if (!ExtractFeatures(data, style, out var features))
         {
             return;
         }
@@ -207,16 +205,7 @@ public class PictureRenderer
 
     private static void RenderTilePartAsVectorLine(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
     {
-        var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
-
-        if (layer == null)
-        {
-            return;
-        }
-
-        var features = layer.Features.Where((f) => style.Filter.Evaluate(f));
-
-        if (features == null || features.Count() == 0)
+        if (!ExtractFeatures(data, style, out var features))
         {
             return;
         }
@@ -237,13 +226,26 @@ public class PictureRenderer
         }
     }
 
-    private static void RenderTilePartAsSymbol(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
+    private static IEnumerable<ISymbol> RenderTilePartAsSymbol(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint, ISymbolFactory symbolFactory)
     {
-        if ((MapboxTileStyle)style).Layout. StyleType == StyleType.
-        var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
+        var result = new List<ISymbol>();
 
-        if (layer == null)
-            return;
+        if (!ExtractFeatures(data, style, out var features))
+        {
+            return result;
+        }
+
+        foreach (var feature in features)
+        {
+            var symbol = symbolFactory.CreateSymbol(style, context, feature);
+
+            if (symbol != null)
+            {
+                result.Add(symbol);
+            }
+        }
+
+        return result;
     }
 
     private static bool IsVisible(int zoom, ITileStyle style)
@@ -258,6 +260,26 @@ public class PictureRenderer
             return false;
         }
         if (style.MaxZoom > -1 && style.MaxZoom <= zoom)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool ExtractFeatures(VectorTile data, ITileStyle style, out IEnumerable<IFeature>? features)
+    {
+        var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
+
+        if (layer == null)
+        {
+            features = null;
+            return false;
+        }
+
+        features = layer.Features.Where((f) => style.Filter.Evaluate(f));
+
+        if (features == null || features.Count() == 0)
         {
             return false;
         }
