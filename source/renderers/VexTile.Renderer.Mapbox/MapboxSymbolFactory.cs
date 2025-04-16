@@ -1,4 +1,5 @@
 ﻿using NetTopologySuite.Features;
+using NetTopologySuite.IO.VectorTiles.Tiles;
 using SkiaSharp;
 using VexTile.Common.Enums;
 using VexTile.Common.Interfaces;
@@ -30,30 +31,39 @@ public class MapboxSymbolFactory : ISymbolFactory
         };
     }
 
-    public ISymbol CreateSymbol(ulong tileId, ITileStyle style, EvaluationContext context, IFeature feature)
+    public ISymbol CreateSymbol(Tile tile, ITileStyle style, EvaluationContext context, IFeature feature)
     {
         var mapboxTileStyle = (MapboxTileStyle)style;
 
         return mapboxTileStyle.Layout.SymbolPlacement.Evaluate(context) switch
         {
-            SymbolPlacement.Point => CreatePointSymbol(tileId, mapboxTileStyle, context, feature),
-            SymbolPlacement.Line => CreateLineSymbol(tileId, mapboxTileStyle, context, feature),
-            SymbolPlacement.LineCenter => CreateLineCenterSymbol(tileId, mapboxTileStyle, context, feature)
+            SymbolPlacement.Point => CreatePointSymbol(tile, mapboxTileStyle, _spriteFactory, context, feature),
+            SymbolPlacement.Line => CreateLineSymbol(tile, mapboxTileStyle, _spriteFactory, context, feature),
+            SymbolPlacement.LineCenter => CreateLineCenterSymbol(tile, mapboxTileStyle, _spriteFactory, context, feature)
         };
     }
 
-    private static ISymbol CreatePointSymbol(ulong tileId, MapboxTileStyle style, EvaluationContext context, IFeature feature)
+    private static ISymbol CreatePointSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
     {
-        return new MapboxPointSymbol(tileId);
+        if (feature.Geometry.GeometryType != "Point" || feature.Geometry.Coordinates.Length != 1)
+            throw new ArgumentException($"GeometryType of symbol with SymbolPlacement 'point' is not 'Point', but {feature.Geometry.GeometryType}'");
+
+        var symbol = new MapboxPointSymbol(tile, feature.Geometry.Centroid, style, spriteFactory, context, feature);
+
+        // Style icon
+        // Style text
+        // Make a list with all possible visible representations of the symbol in order to use
+
+        return symbol;
     }
 
-    private static ISymbol CreateLineSymbol(ulong tileId, MapboxTileStyle style, EvaluationContext context, IFeature feature)
+    private static ISymbol CreateLineSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
     {
-        return new MapboxPointSymbol(tileId);
+        throw new NotImplementedException();
     }
 
-    private static ISymbol CreateLineCenterSymbol(ulong tileId, MapboxTileStyle style, EvaluationContext context, IFeature feature)
+    private static ISymbol CreateLineCenterSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
     {
-        return new MapboxPointSymbol(tileId);
+        throw new NotImplementedException();
     }
 }
