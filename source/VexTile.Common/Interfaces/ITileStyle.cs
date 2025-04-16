@@ -1,4 +1,5 @@
-﻿using VexTile.Common.Primitives;
+﻿using VexTile.Common.Enums;
+using VexTile.Common.Primitives;
 
 namespace VexTile.Common.Interfaces;
 
@@ -7,7 +8,7 @@ public interface ITileStyle
     /// <summary>
     /// Type of this style
     /// </summary>
-    string StyleType { get; }
+    StyleType StyleType { get; }
 
     /// <summary>
     /// Minimal zoom from which this style layer is used

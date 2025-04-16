@@ -3,6 +3,10 @@
 public enum StyleType
 {
     /// <summary>
+    /// Style is for a tile background
+    /// </summary>
+    Background,
+    /// <summary>
     /// Style is for a raster source
     /// </summary>
     Raster,
@@ -19,11 +23,7 @@ public enum StyleType
     /// </summary>
     Symbol,
     /// <summary>
-    /// Style is for drawing a caption
+    /// Style is for drawing buildings in 3D
     /// </summary>
-    Caption,
-    /// <summary>
-    /// Style is for drawing a symbol with caption
-    /// </summary>
-    SymbolWithCaption
+    FillExtrusion
 }

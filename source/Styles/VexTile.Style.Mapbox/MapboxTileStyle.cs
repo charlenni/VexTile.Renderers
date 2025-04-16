@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using VexTile.Common.Enums;
 using VexTile.Common.Interfaces;
 using VexTile.Common.Primitives;
 using VexTile.Style.Mapbox.Filter;
@@ -12,8 +13,9 @@ public class MapboxTileStyle : ITileStyle
     [JsonProperty("id")]
     public string Id { get; set; } = string.Empty;
 
+    [JsonConverter(typeof(StyleTypeConverter))]
     [JsonProperty("type")]
-    public string StyleType { get; set; } = string.Empty;
+    public StyleType StyleType { get; set; }
 
     [JsonConverter(typeof(FilterConverter))]
     [JsonProperty("filter")]
