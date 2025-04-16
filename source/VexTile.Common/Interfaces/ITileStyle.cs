@@ -6,6 +6,11 @@ namespace VexTile.Common.Interfaces;
 public interface ITileStyle
 {
     /// <summary>
+    /// Name of style
+    /// </summary>
+    string Name { get; }
+
+    /// <summary>
     /// Type of this style
     /// </summary>
     StyleType StyleType { get; }

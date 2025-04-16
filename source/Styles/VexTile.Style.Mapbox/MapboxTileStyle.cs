@@ -11,7 +11,7 @@ namespace VexTile.Style.Mapbox;
 public class MapboxTileStyle : ITileStyle
 {
     [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     [JsonConverter(typeof(StyleTypeConverter))]
     [JsonProperty("type")]
@@ -52,7 +52,7 @@ public class MapboxTileStyle : ITileStyle
 
     public override string ToString()
     {
-        return Id + " " + StyleType;
+        return Name + " " + StyleType;
     }
 
     public void Update(EvaluationContext context)
