@@ -53,10 +53,14 @@ public class PictureRenderer
             byte[]? binaryTileData = null;
 
             if (source.MinZoom <= tile.Zoom && source.MaxZoom >= tile.Zoom)
+            {
                 binaryTileData = await source.DataSource.GetTileAsync(tile);
-
+            }
+#
             if (binaryTileData == null)
+            {
                 continue;
+            }
 
             switch (source.SourceType)
             {
@@ -77,7 +81,9 @@ public class PictureRenderer
         foreach (var style in _styles)
         {
             if (!IsVisible(tile.Zoom, style))
+            {
                 continue;
+            }
 
             switch (style.StyleType)
             {
@@ -86,15 +92,21 @@ public class PictureRenderer
                     break;
                 case StyleType.Raster:
                     if (tiles[style.Source] != null)
+                    {
                         RenderTileAsRaster(canvas, context, (byte[])tiles[style.Source], style, _paints[style]);
+                    }
                     break;
                 case StyleType.Fill:
                     if (tiles[style.Source] != null)
+                    {
                         RenderTilePartAsVectorFill(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+                    }
                     break;
                 case StyleType.Line:
                     if (tiles[style.Source] != null)
+                    {
                         RenderTilePartAsVectorLine(canvas, context, (VectorTile)tiles[style.Source], style, _paints[style]);
+                    }
                     break;
                 case StyleType.Symbol:
                 case StyleType.FillExtrusion:
@@ -131,18 +143,24 @@ public class PictureRenderer
         var skPaints = paint.CreateSKPaint(context);
 
         foreach (var skPaint in skPaints)
+        {
             canvas.DrawRect(_backgroundRect, skPaint);
+        }
     }
 
     private static void RenderTileAsRaster(SKCanvas canvas, EvaluationContext context, byte[] data, ITileStyle style, IPaint paint)
     {
-        if (data == null || data.Length == 0) 
+        if (data == null || data.Length == 0)
+        {
             throw new ArgumentException("Image data is empty", nameof(data));
+        }
 
         using var bitmap = SKBitmap.Decode(data);
 
-        if (bitmap == null) 
+        if (bitmap == null)
+        {
             throw new Exception("Not possible to decode image");
+        }
 
         var skPaints = paint.CreateSKPaint(context);
 
@@ -157,12 +175,16 @@ public class PictureRenderer
         var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
 
         if (layer == null)
+        {
             return;
+        }
 
         var features = layer.Features.Where((f) => style.Filter.Evaluate(f));
 
         if (features == null || features.Count() == 0)
+        {
             return;
+        }
 
         var skPaints = paint.CreateSKPaint(context);
 
@@ -175,7 +197,9 @@ public class PictureRenderer
             canvas.ClipPath(path);
 
             foreach (var skPaint in skPaints)
+            {
                 canvas.DrawPath(path, skPaint);
+            }
 
             canvas.Restore();
         }
@@ -186,12 +210,16 @@ public class PictureRenderer
         var layer = data.Layers.Where(l => l.Name == style.SourceLayer)?.FirstOrDefault();
 
         if (layer == null)
+        {
             return;
+        }
 
         var features = layer.Features.Where((f) => style.Filter.Evaluate(f));
 
         if (features == null || features.Count() == 0)
+        {
             return;
+        }
 
         var skPaints = paint.CreateSKPaint(context);
 
@@ -199,10 +227,14 @@ public class PictureRenderer
 
         // Draw features that belong to a line style (add path by path and draw them at the end together)
         foreach (var feature in features)
+        {
             path.AddPath(feature.ToSKPath());
+        }
 
         foreach (var skPaint in skPaints)
+        {
             canvas.DrawPath(path, skPaint);
+        }
     }
 
     private static void RenderTilePartAsSymbol(SKCanvas canvas, EvaluationContext context, VectorTile data, ITileStyle style, IPaint paint)
@@ -217,12 +249,18 @@ public class PictureRenderer
     private static bool IsVisible(int zoom, ITileStyle style)
     {
         if (!style.Visible)
+        {
             return false;
+        }
         // Unset zoom values are per default -1. So, if zoom value is bigger than -1 it is set by style file.
         if (style.MinZoom > -1 && style.MinZoom > zoom)
+        {
             return false;
+        }
         if (style.MaxZoom > -1 && style.MaxZoom <= zoom)
+        {
             return false;
+        }
 
         return true;
     }
