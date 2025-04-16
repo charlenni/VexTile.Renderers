@@ -1,6 +1,12 @@
-﻿namespace VexTile.Renderer.Common.Interfaces;
+﻿using NetTopologySuite.IO.VectorTiles.Tiles;
+
+namespace VexTile.Renderer.Common.Interfaces;
 
 public interface ISymbol
 {
-    ulong TileId { get; }
+    Tile Tile { get; }
+
+    double SortOrder { get; }
+
+    bool AllowOthers { get; }
 }
