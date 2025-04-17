@@ -6,306 +6,43 @@ using SkiaSharp;
 using VexTile.Common.Primitives;
 using VexTile.Renderer.Common.Interfaces;
 using VexTile.Style.Mapbox;
-using VexTile.Style.Mapbox.Enums;
-using VexTile.Style.Mapbox.Expressions;
 
 namespace VexTile.Renderer.Mapbox;
 
 public class MapboxPointSymbol : MapboxSymbol
 {
-    bool _isIcon;
-    bool _isText;
-    bool _isIconOptional;
-    bool _isTextOptional;
-    bool _isIconAllowOverlap;
-    bool _isTextAllowOverlap;
-    SKImage _icon;
-    float _iconRotation;
-    int _iconWidth;
-    int _iconHeight;
-    float _iconScale;
-    int _iconPadding;
-    SKPaint _iconPaint = new SKPaint();
-    SKPaint _textPaint = new SKPaint();
-    SKPoint _iconAnchor;
-    SKPoint _iconOffset;
-    StoppedFloat _iconBrightnessMin;
-    StoppedFloat _iconBrightnessMax;
-    StoppedFloat _iconContrast;
-    StoppedFloat _iconSaturation;
-    StoppedFloat _iconOpacity;
-    StoppedFloatArray _iconTranslate;
-    StoppedEnum<MapAlignment> _iconTranslateAnchor;
+    MapboxIconPointSymbol? _iconPointSymbol;
+    MapboxTextPointSymbol? _textPointSymbol;
+    bool _drawIconWithoutText;
+    bool _drawTextWithoutIcon;
 
     public MapboxPointSymbol(Tile tile, Point point, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature) : base(tile)
     {
-        context.Feature = feature;
+        _iconPointSymbol = new MapboxIconPointSymbol(tile, point, style, spriteFactory, context, feature);
+        _textPointSymbol = new MapboxTextPointSymbol(tile, point, style, context, feature);
 
-        CreateCommon(style, context);
-        CreateIcon(style, spriteFactory, context);
+        _drawIconWithoutText = style.Layout.TextOptional;
+        _drawTextWithoutIcon = style.Layout.IconOptional;
     }
 
     /// <summary>
     /// Point where symbol is placed in tile coordinates
     /// </summary>
-    public Coordinate Point { get; }
-
-    public bool IsIconVisible { get; private set; }
-
-    public bool IsIconAlwaysVisible { get; private set; }
-
-    /// <summary>
-    /// Allow other symbols at the same place
-    /// </summary>
-    public bool AllowOthers { get; private set; }
-
-    private void CreateIcon(MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context)
-    {
-        var sprite = spriteFactory((string)(style.Layout.IconImage?.Evaluate(context) ?? string.Empty));
-
-        if (sprite == null)
-        {
-            _isIcon = false;
-            IsIconVisible = false;
-            IsIconAlwaysVisible = false;
-            return;
-        }
-
-        _isIcon = true;
-        _isIconAllowOverlap = style.Layout.IconAllowOverlap;
-        _isIconOptional = style.Layout.IconOptional;
-
-        AllowOthers = style.Layout.IconIgnorePlacement;
-
-        _icon = sprite;
-        _iconBrightnessMin = style.Paint.IconColorBrightnessMin;
-        _iconBrightnessMax = style.Paint.IconColorBrightnessMax;
-        _iconContrast = style.Paint.IconColorContrast;
-        _iconSaturation = style.Paint.IconColorSaturation;
-        _iconOpacity = style.Paint.IconOpacity;
-
-        _iconScale = (float)(style.Layout.IconSize.Evaluate(context) ?? 1);
-        _iconRotation = (float)(style.Layout.IconRotate.Evaluate(context) ?? 0);
-        _iconPadding = (int)(style.Layout.IconPadding.Evaluate(context) ?? 0);
-
-        _iconWidth = (int)Math.Ceiling(sprite.Width * _iconScale) + _iconPadding * 2;
-        _iconHeight = (int)Math.Ceiling(sprite.Height * _iconScale) + _iconPadding * 2;
-
-        _iconAnchor = CreateAnchor(style.Layout.IconAnchor, _iconWidth, _iconHeight);
-        _iconOffset = CreateOffset((float[])style.Layout.IconOffset.Evaluate(context), _iconScale);
-
-        _iconTranslate = style.Paint.IconTranslate;
-        _iconTranslateAnchor = style.Paint.IconTranslateAnchor;
-    }
+    public Point Point { get; }
 
     public void Draw(SKCanvas canvas, EvaluationContext context, ref STRtree<ISymbol> tree)
     {
-        Envelope? envIcon = null;
-        Envelope? envText = null;
+        bool spaceForIconAvailable = _iconPointSymbol?.CheckForSpace(canvas, context, tree) ?? false;
+        bool spaceForTextAvailable = _textPointSymbol?.CheckForSpace(canvas, context, tree) ?? false;
 
-        bool isSpaceForIcon = false;
-        bool isSpaceForIconOccupied = false;
-
-        // Check, if there is space for icon
-        if (_isIcon)
+        if (spaceForIconAvailable && (spaceForTextAvailable || _drawIconWithoutText))
         {
-            isSpaceForIcon = true;
-
-            envIcon = CalcIconEnvelope();
-
-            var symbols = tree.Query(envIcon);
-
-            isSpaceForIconOccupied = symbols.Count() > 0;
-
-            foreach (var symbol in symbols)
-            {
-                if (!symbol.AllowOthers)
-                {
-                    isSpaceForIcon = false;
-                    break;
-                }
-            }
+            _iconPointSymbol?.Draw(canvas, context, ref tree);
         }
 
-        bool isSpaceForText = false;
-        bool isSpaceForTextOccupied = false;
-
-        // Check, if there is space for text
-        if (_isText)
+        if (spaceForTextAvailable && (spaceForIconAvailable || _drawTextWithoutIcon))
         {
-            isSpaceForText = true;
-
-            envText = CalcTextEnvelope();
-
-            var symbols = tree.Query(envText);
-
-            isSpaceForTextOccupied = symbols.Count() > 0;
-
-            foreach (var symbol in symbols)
-            {
-                if (!symbol.AllowOthers)
-                {
-                    isSpaceForText = false;
-                    break;
-                }
-            }
+            _iconPointSymbol?.Draw(canvas, context, ref tree);
         }
-
-        // Draw icon if there is enough space or overlap allowed and space for text or the text is optional
-        if (_isIcon && (isSpaceForIcon || (isSpaceForIconOccupied && _isIconAllowOverlap)) && (isSpaceForText || _isTextOptional))
-        {
-            DrawIcon(canvas, context);
-
-            if (envIcon != null)
-            {
-                tree.Insert(envIcon, this);
-            }
-        }
-
-        if (_isText && (isSpaceForText || (isSpaceForTextOccupied && _isTextAllowOverlap)) && (isSpaceForIcon || _isIconOptional))
-        {
-            DrawText(canvas, context);
-
-            if (envText != null)
-            {
-                tree.Insert(envText, this);
-            }
-        }
-    }
-
-    private void DrawIcon(SKCanvas canvas, EvaluationContext context)
-    {
-        canvas.Save();
-
-        _iconPaint.ColorFilter = CreateColorFilter(
-            (float)(_iconBrightnessMin.Evaluate(context) ?? 0.0f),
-            (float)(_iconBrightnessMax.Evaluate(context) ?? 1.0f),
-            (float)(_iconContrast.Evaluate(context) ?? 1.0f),
-            (float)(_iconSaturation.Evaluate(context) ?? 1.0f),
-            (float)(_iconOpacity.Evaluate(context) ?? 1.0f));
-
-        var translate = (float[])(_iconTranslate.Evaluate(context) ?? new float[] { 0f, 0f });
-        var translateAnchor = (MapAlignment)(_iconTranslateAnchor.Evaluate(context) ?? MapAlignment.Map);
-
-        if (translateAnchor == MapAlignment.Viewport)
-        {
-            canvas.RotateDegrees(-context.Rotation);
-        }
-
-        canvas.Scale(1f / context.Scale);
-        canvas.Translate(translate[0], translate[1]);
-        canvas.Translate(_iconOffset);
-        canvas.RotateDegrees(_iconRotation);
-
-        canvas.DrawImage(_icon, new SKRect(_iconPadding, _iconPadding, _iconWidth - _iconPadding, _iconHeight - _iconPadding), _iconPaint);
-
-        canvas.Restore();
-    }
-
-    private void DrawText(SKCanvas canvas, EvaluationContext context)
-    {
-    }
-
-    private SKPoint CreateAnchor(Anchor anchor, int width, int height)
-    {
-        return anchor switch
-        {
-            Anchor.Center => new SKPoint(width / 2, height / 2),
-            Anchor.Left => new SKPoint(0, height / 2),
-            Anchor.Right => new SKPoint(-width, height / 2),
-            Anchor.Top => new SKPoint(width / 2, 0),
-            Anchor.Bottom => new SKPoint(width / 2, -height),
-            Anchor.TopLeft => new SKPoint(0, 0),
-            Anchor.TopRight => new SKPoint(-width, 0),
-            Anchor.BottomLeft => new SKPoint(0, -height),
-            Anchor.BottomRight => new SKPoint(-width, -height),
-            _ => throw new NotImplementedException($"Unknown IconAnchor")
-        };
-    }
-
-    private SKPoint CreateOffset(float[] offset, float scale)
-    {
-        if (offset.Length == 2)
-        {
-            return new SKPoint(offset[0] * scale, offset[1] * scale);
-        }
-        else
-        {
-            return new SKPoint(0, 0);
-        }
-    }
-
-    private SKColorFilter CreateColorFilter(float minBrightness, float maxBrightness, float contrast, float saturation, float opacity)
-    {
-        // Brightness-Transformation
-        float brightnessRange = maxBrightness - minBrightness;
-        float brightnessOffset = minBrightness;
-
-        // Convert: contrast/saturation ∈ [-1..1] → [0..2]
-        float mappedContrast = 1f + contrast;
-        float mappedSaturation = 1f + saturation;
-
-        // ITU-R BT.601
-        float lumR = 0.2126f;
-        float lumG = 0.7152f;
-        float lumB = 0.0722f;
-
-        float sr = (1f - mappedSaturation) * lumR;
-        float sg = (1f - mappedSaturation) * lumG;
-        float sb = (1f - mappedSaturation) * lumB;
-
-        // Contrast Offset
-        float contrastOffset = 0.5f * (1f - mappedContrast) * 255f;
-
-        // Final Brightness-Offset
-        float brightnessShift = 255f * brightnessOffset;
-
-        // Combined Matrix
-        float[] matrix = new float[]
-        {
-            // Red
-            (sr + mappedSaturation) * mappedContrast * brightnessRange,
-            sg * mappedContrast * brightnessRange,
-            sb * mappedContrast * brightnessRange,
-            0,
-            contrastOffset + brightnessShift,
-
-            // Green
-            sr * mappedContrast * brightnessRange,
-            (sg + mappedSaturation) * mappedContrast * brightnessRange,
-            sb * mappedContrast * brightnessRange,
-            0,
-            contrastOffset + brightnessShift,
-
-            // Blue
-            sr * mappedContrast * brightnessRange,
-            sg * mappedContrast * brightnessRange,
-            (sb + mappedSaturation) * mappedContrast * brightnessRange,
-            0,
-            contrastOffset + brightnessShift,
-
-            // Alpha
-            0, 0, 0, opacity, 0
-        };
-
-        return SKColorFilter.CreateColorMatrix(matrix);
-    }
-
-    private static (float rotationDeg, float scaleX, float scaleY, SKPoint translation) AnalyzeCanvasTransform(SKCanvas canvas)
-    {
-        var m = canvas.TotalMatrix;
-
-        // Rotation berechnen (in Grad)
-        float rotationRad = (float)Math.Atan2(m.SkewY, m.ScaleY);
-        float rotationDeg = (float)(rotationRad * (180f / Math.PI));
-
-        // Skalierung berechnen (Betrag der Vektoren)
-        float scaleX = (float)Math.Sqrt(m.ScaleX * m.ScaleX + m.SkewX * m.SkewX);
-        float scaleY = (float)Math.Sqrt(m.SkewY * m.SkewY + m.ScaleY * m.ScaleY);
-
-        // Translation (Position)
-        var translation = new SKPoint(m.TransX, m.TransY);
-
-        return (rotationDeg, scaleX, scaleY, translation);
     }
 }
