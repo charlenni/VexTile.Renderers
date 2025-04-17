@@ -50,10 +50,6 @@ public class MapboxSymbolFactory : ISymbolFactory
 
         var symbol = new MapboxPointSymbol(tile, feature.Geometry.Centroid, style, spriteFactory, context, feature);
 
-        // Style icon
-        // Style text
-        // Make a list with all possible visible representations of the symbol in order to use
-
         return symbol;
     }
 
