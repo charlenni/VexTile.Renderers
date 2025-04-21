@@ -18,8 +18,24 @@ public class MapboxPointSymbol : MapboxSymbol
 
     public MapboxPointSymbol(Tile tile, Point point, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature) : base(tile)
     {
-        _iconPointSymbol = new MapboxIconPointSymbol(tile, point, style, spriteFactory, context, feature);
-        _textPointSymbol = new MapboxTextPointSymbol(tile, point, style, context, feature);
+        Point = point;
+
+        try
+        {
+            _iconPointSymbol = new MapboxIconPointSymbol(tile, point, style, spriteFactory, context, feature);
+        }
+        catch (Exception e)
+        {
+            _iconPointSymbol = null;
+        }
+        try
+        {
+            _textPointSymbol = new MapboxTextPointSymbol(tile, point, style, context, feature);
+        }
+        catch (Exception e)
+        {
+            _textPointSymbol = null;
+        }
 
         _drawIconWithoutText = style.Layout.TextOptional;
         _drawTextWithoutIcon = style.Layout.IconOptional;
@@ -30,19 +46,23 @@ public class MapboxPointSymbol : MapboxSymbol
     /// </summary>
     public Point Point { get; }
 
+    public bool HasIcon => _iconPointSymbol != null;
+
+    public bool HasText => _textPointSymbol != null;
+
     public void Draw(SKCanvas canvas, EvaluationContext context, ref STRtree<ISymbol> tree)
     {
         bool spaceForIconAvailable = _iconPointSymbol?.CheckForSpace(canvas, context, tree) ?? false;
         bool spaceForTextAvailable = _textPointSymbol?.CheckForSpace(canvas, context, tree) ?? false;
 
-        if (spaceForIconAvailable && (spaceForTextAvailable || _drawIconWithoutText))
+        if (spaceForIconAvailable && (spaceForTextAvailable || _drawIconWithoutText) && HasIcon)
         {
             _iconPointSymbol?.Draw(canvas, context, ref tree);
         }
 
-        if (spaceForTextAvailable && (spaceForIconAvailable || _drawTextWithoutIcon))
+        if (spaceForTextAvailable && (spaceForIconAvailable || _drawTextWithoutIcon) && HasText)
         {
-            _iconPointSymbol?.Draw(canvas, context, ref tree);
+            _textPointSymbol?.Draw(canvas, context, ref tree);
         }
     }
 }

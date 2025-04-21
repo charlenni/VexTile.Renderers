@@ -11,7 +11,7 @@ namespace VexTile.Renderer.Mapbox;
 
 public class MapboxSymbolFactory : ISymbolFactory
 {
-    Func<string, SKImage> _spriteFactory;
+    Func<string, SKImage?> _spriteFactory;
 
     public MapboxSymbolFactory(MapboxSpriteFile? spriteFile)
     {
@@ -20,6 +20,11 @@ public class MapboxSymbolFactory : ISymbolFactory
 
         _spriteFactory = (name) =>
         {
+            if (string.IsNullOrEmpty(name) || !spriteFile.Sprites.ContainsKey(name))
+            {
+                return null;
+            }
+
             var bitmap = spriteFile.Bitmap;
             var sprite = spriteFile.Sprites[name];
 
@@ -31,7 +36,7 @@ public class MapboxSymbolFactory : ISymbolFactory
         };
     }
 
-    public ISymbol CreateSymbol(Tile tile, ITileStyle style, EvaluationContext context, IFeature feature)
+    public ISymbol? CreateSymbol(Tile tile, ITileStyle style, EvaluationContext context, IFeature feature)
     {
         var mapboxTileStyle = (MapboxTileStyle)style;
 
@@ -43,23 +48,30 @@ public class MapboxSymbolFactory : ISymbolFactory
         };
     }
 
-    private static ISymbol CreatePointSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
+    private static ISymbol? CreatePointSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
     {
         if (feature.Geometry.GeometryType != "Point" || feature.Geometry.Coordinates.Length != 1)
             throw new ArgumentException($"GeometryType of symbol with SymbolPlacement 'point' is not 'Point', but {feature.Geometry.GeometryType}'");
 
         var symbol = new MapboxPointSymbol(tile, feature.Geometry.Centroid, style, spriteFactory, context, feature);
 
+        if (!symbol.HasIcon && !symbol.HasText)
+        {
+            return null;
+        }
+
         return symbol;
     }
 
-    private static ISymbol CreateLineSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
+    private static ISymbol? CreateLineSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
     {
-        throw new NotImplementedException();
+        // TODO
+        return null;
     }
 
-    private static ISymbol CreateLineCenterSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
+    private static ISymbol? CreateLineCenterSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
     {
-        throw new NotImplementedException();
+        // TODO
+        return null;
     }
 }
