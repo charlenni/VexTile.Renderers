@@ -11,7 +11,7 @@ public class BenchmarksMapboxRenderer
 {
     readonly string _path = "files";
 
-    Renderer.Picture.Renderer? _renderer;
+    Renderer.Default.Renderer? _renderer;
     List<Tile> _tiles = new List<Tile> { new Tile(1, 0, 1), new Tile(33, 22, 6), new Tile(1072, 717, 11), new Tile(8580, 5738, 14), new Tile(8581, 5738, 14) };
 
     [GlobalSetup]
@@ -20,7 +20,7 @@ public class BenchmarksMapboxRenderer
         var stream = File.Open(Path.Combine(_path, "osm-liberty.json"), FileMode.Open, FileAccess.Read);
         var mapboxStyleFile = MapboxStyleFileLoader.Load(stream).Result;
 
-        _renderer = new Renderer.Picture.Renderer(mapboxStyleFile.Sources.Select(s => (ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites), new MapboxSymbolFactory(mapboxStyleFile.Sprites));
+        _renderer = new Renderer.Default.Renderer(mapboxStyleFile.Sources.Select(s => (ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites), new MapboxSymbolFactory(mapboxStyleFile.Sprites));
     }
 
     [Benchmark]

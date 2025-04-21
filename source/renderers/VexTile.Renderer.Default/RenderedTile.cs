@@ -1,10 +1,9 @@
 ﻿using NetTopologySuite.IO.VectorTiles.Tiles;
 using SkiaSharp;
-using System.Data;
 using VexTile.Common.Primitives;
 using VexTile.Renderer.Common.Interfaces;
 
-namespace VexTile.Renderer.Picture;
+namespace VexTile.Renderer.Default;
 
 public class RenderedTile : IRenderedTile
 {

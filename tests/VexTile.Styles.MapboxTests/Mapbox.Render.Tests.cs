@@ -2,8 +2,8 @@
 using VexTile.Common.Interfaces;
 using VexTile.Common.Primitives;
 using VexTile.Renderer.Common.Extensions;
+using VexTile.Renderer.Default;
 using VexTile.Renderer.Mapbox;
-using VexTile.Renderer.Picture;
 using VexTile.Style.Mapbox;
 using Xunit;
 
@@ -12,7 +12,7 @@ namespace VexTile.Styles.MapboxTests;
 public class MapboxRenderTests
 {
     readonly string _path = "files";
-    Renderer.Picture.Renderer _renderer;
+    Renderer.Default.Renderer _renderer;
 
     public MapboxRenderTests()
     {
@@ -20,7 +20,7 @@ public class MapboxRenderTests
 
         var mapboxStyleFile = MapboxStyleFileLoader.Load(stream).Result;
         
-        _renderer = new Renderer.Picture.Renderer(mapboxStyleFile.Sources.Select(s => (ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites), new MapboxSymbolFactory(mapboxStyleFile.Sprites));
+        _renderer = new Renderer.Default.Renderer(mapboxStyleFile.Sources.Select(s => (ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites), new MapboxSymbolFactory(mapboxStyleFile.Sprites));
     }
 
     [Theory]

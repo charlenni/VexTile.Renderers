@@ -8,7 +8,7 @@ using VexTile.Common.Primitives;
 using VexTile.Renderer.Common.Extensions;
 using VexTile.Renderer.Common.Interfaces;
 
-namespace VexTile.Renderer.Picture;
+namespace VexTile.Renderer.Default;
 
 /// <summary>
 /// A renderer, that converts data from different tile sources with the given styles

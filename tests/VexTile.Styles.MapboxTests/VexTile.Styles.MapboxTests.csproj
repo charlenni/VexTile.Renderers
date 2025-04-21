@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\source\renderers\VexTile.Renderer.Default\VexTile.Renderer.Default.csproj" />
     <ProjectReference Include="..\..\source\renderers\VexTile.Renderer.Mapbox\VexTile.Renderer.Mapbox.csproj" />
     <ProjectReference Include="..\..\source\Styles\VexTile.Style.Mapbox\VexTile.Style.Mapbox.csproj" />
   </ItemGroup>
