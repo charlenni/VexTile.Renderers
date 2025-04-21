@@ -7,5 +7,5 @@ namespace VexTile.Renderer.Common.Interfaces;
 
 public interface ISymbolFactory
 {
-    ISymbol CreateSymbol(Tile tile, ITileStyle style, EvaluationContext context, IFeature feature);
+    ISymbol? CreateSymbol(Tile tile, ITileStyle style, EvaluationContext context, IFeature feature);
 }
