@@ -7,13 +7,13 @@ namespace VexTile.TileConverter.Mapbox;
 
 public class MapboxTileConverter : ITileConverter
 {
-    private NetTopologySuite.IO.VectorTiles.Mapbox.MapboxTileReader _tileConverter;
+    private MapboxTileReader _tileConverter;
     private ITileDataSource _dataSource;
 
     public MapboxTileConverter(ITileDataSource dataSource)
     {
         _dataSource = dataSource;
-        _tileConverter = new NetTopologySuite.IO.VectorTiles.Mapbox.MapboxTileReader();
+        _tileConverter = new MapboxTileReader();
     }
 
     public async Task<VectorTile> Convert(NetTopologySuite.IO.VectorTiles.Tiles.Tile tile, byte[]? data = null)
