@@ -55,8 +55,7 @@ public class RenderedTileLayer : BaseLayer, IAsyncDataFetcher, IDisposable
         _tileFetchDispatcher = new TileFetchDispatcher(MemoryCache, _tileSource.Schema, fetchTileAsFeature ?? ToFeatureAsync, dataFetchStrategy);
         _tileFetchDispatcher.DataChanged += TileFetchDispatcherOnDataChanged;
         _tileFetchDispatcher.PropertyChanged += TileFetchDispatcherOnPropertyChanged;
-        // There should be a way to override the application wide default user agent.
-        //_httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", HttpClientTools.GetDefaultApplicationUserAgent());
+        Style = new RenderedTileStyle();
     }
 
     /// <summary>
