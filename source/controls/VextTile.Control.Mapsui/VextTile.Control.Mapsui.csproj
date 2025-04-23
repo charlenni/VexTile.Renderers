@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BruTile" />
+    <PackageReference Include="Mapsui" />
+    <PackageReference Include="Mapsui.Rendering.Skia" />
+    <PackageReference Include="Mapsui.Tiling" />
+    <PackageReference Include="NetTopologySuite.IO.VectorTiles" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\NetTopologySuite.IO.VectorTiles\src\NetTopologySuite.IO.VectorTiles.Mapbox\NetTopologySuite.IO.VectorTiles.Mapbox.csproj" />
+    <ProjectReference Include="..\..\renderers\VexTile.Renderer.Common\VexTile.Renderer.Common.csproj" />
+    <ProjectReference Include="..\..\renderers\VexTile.Renderer.Default\VexTile.Renderer.Default.csproj" />
+    <ProjectReference Include="..\..\renderers\VexTile.Renderer.Mapbox\VexTile.Renderer.Mapbox.csproj" />
+    <ProjectReference Include="..\..\Styles\VexTile.Style.Mapbox\VexTile.Style.Mapbox.csproj" />
+  </ItemGroup>
+
+</Project>
