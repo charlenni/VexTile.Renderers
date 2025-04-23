@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>netstandard2.0;net8.0;net9.0</TargetFrameworks>
+	  <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 	  <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\converters\VexTile.Converter.Mapbox\VexTile.TileConverter.Mapbox.csproj" />
-    <ProjectReference Include="..\..\DataSources\VexTile.DataSource.MBTilesSQLite\VexTile.TileDataSource.csproj" />
+    <ProjectReference Include="..\..\datasources\VexTile.TileDataSource\VexTile.TileDataSource.csproj" />
     <ProjectReference Include="..\..\Styles\VexTile.Style.Mapbox\VexTile.Style.Mapbox.csproj" />
     <ProjectReference Include="..\..\VexTile.Common\VexTile.Common.csproj" />
     <ProjectReference Include="..\VexTile.Renderer.Common\VexTile.Renderer.Common.csproj" />

@@ -19,7 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\NetTopologySuite.IO.VectorTiles\src\NetTopologySuite.IO.VectorTiles.Mapbox\NetTopologySuite.IO.VectorTiles.Mapbox.csproj" />
     <ProjectReference Include="..\..\source\converters\VexTile.Converter.Mapbox\VexTile.TileConverter.Mapbox.csproj" />
-    <ProjectReference Include="..\..\source\DataSources\VexTile.DataSource.MBTilesSQLite\VexTile.TileDataSource.csproj" />
+    <ProjectReference Include="..\..\source\datasources\VexTile.TileDataSource\VexTile.TileDataSource.csproj" />
     <ProjectReference Include="..\..\source\VexTile.Common\VexTile.Common.csproj" />
   </ItemGroup>
 
