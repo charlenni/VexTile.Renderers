@@ -51,7 +51,10 @@ public class MapboxSymbolFactory : ISymbolFactory
     private static ISymbol? CreatePointSymbol(Tile tile, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature)
     {
         if (feature.Geometry.GeometryType != "Point" || feature.Geometry.Coordinates.Length != 1)
-            throw new ArgumentException($"GeometryType of symbol with SymbolPlacement 'point' is not 'Point', but {feature.Geometry.GeometryType}'");
+        {
+            // Symbol should be a point, but geometry isn't a point
+            return null;
+        }
 
         var symbol = new MapboxPointSymbol(tile, feature.Geometry.Centroid, style, spriteFactory, context, feature);
 
