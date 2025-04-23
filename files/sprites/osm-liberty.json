@@ -1462,14 +1462,14 @@
     "x": 210,
     "y": 148
   },
-  "swimming_11": {
+  "swimming_pool_11": {
     "height": 17,
     "pixelRatio": 1,
     "width": 17,
     "x": 252,
     "y": 106
   },
-  "swimming_15": {
+  "swimming_pool_15": {
     "height": 21,
     "pixelRatio": 1,
     "width": 21,
@@ -1518,14 +1518,14 @@
     "x": 42,
     "y": 169
   },
-  "toilet_11": {
+  "toilets_11": {
     "height": 17,
     "pixelRatio": 1,
     "width": 17,
     "x": 320,
     "y": 106
   },
-  "toilet_15": {
+  "toilets_15": {
     "height": 21,
     "pixelRatio": 1,
     "width": 21,
