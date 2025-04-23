@@ -14,7 +14,7 @@
       "maxzoom": 6,
       "tileSize": 256,
       "tiles": [
-        "https://klokantech.github.io/naturalearthtiles/tiles/natural_earth_2_shaded_relief.raster/{z}/{x}/{y}.png"
+        "mbtiles://files/natural_earth_2_shaded_relief.raster.mbtiles"
       ],
       "type": "raster"
     }
