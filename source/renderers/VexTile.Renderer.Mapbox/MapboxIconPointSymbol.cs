@@ -3,9 +3,10 @@ using NetTopologySuite.Geometries;
 using NetTopologySuite.Index.Strtree;
 using NetTopologySuite.IO.VectorTiles.Tiles;
 using SkiaSharp;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using VexTile.Common.Primitives;
 using VexTile.Renderer.Common.Interfaces;
-using VexTile.Renderer.Mapbox.Exceptions;
 using VexTile.Style.Mapbox;
 using VexTile.Style.Mapbox.Enums;
 using VexTile.Style.Mapbox.Expressions;
@@ -34,12 +35,34 @@ public class MapboxIconPointSymbol : MapboxSymbol
     StoppedFloatArray _iconTranslate;
     StoppedEnum<MapAlignment> _iconTranslateAnchor;
 
+    static Regex regex = new Regex(@".*\{(.*)\}.*", RegexOptions.Compiled);
+
     public MapboxIconPointSymbol(Tile tile, Point point, MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context, IFeature feature) : base(tile)
     {
         context.Feature = feature;
 
         CreateCommon(style, context);
-        CreateIcon(style, spriteFactory, context);
+
+        var spriteName = (string)(style.Layout.IconImage?.Evaluate(context) ?? string.Empty);
+
+        if (spriteName == string.Empty)
+        {
+            return;
+        }
+
+        spriteName = ReplaceWithTags(spriteName, (AttributesTable)feature.Attributes, context);
+
+        var sprite = spriteFactory(spriteName);
+
+        if (sprite == null)
+        {
+            // TODO: What to do?
+            System.Diagnostics.Debug.WriteLine($"Couldn't find sprite with name '{spriteName}'");
+            //throw new SpriteNotFoundException($"Couldn't find sprite with name '{spriteName}'");
+            return;
+        }
+
+        CreateIcon(style, sprite, context);
     }
 
     /// <summary>
@@ -79,16 +102,8 @@ public class MapboxIconPointSymbol : MapboxSymbol
         }
     }
 
-    private void CreateIcon(MapboxTileStyle style, Func<string, SKImage> spriteFactory, EvaluationContext context)
+    private void CreateIcon(MapboxTileStyle style, SKImage sprite, EvaluationContext context)
     {
-        var spriteName = (string)(style.Layout.IconImage?.Evaluate(context) ?? string.Empty);
-        var sprite = spriteFactory(spriteName);
-
-        if (sprite == null)
-        {
-            throw new SpriteNotFoundException($"Couldn't find sprite with name '{spriteName}'");
-        }
-
         _isIconAllowOverlap = style.Layout.IconAllowOverlap;
         _isIconOptional = style.Layout.IconOptional;
 
@@ -103,7 +118,7 @@ public class MapboxIconPointSymbol : MapboxSymbol
 
         _iconScale = (float)(style.Layout.IconSize.Evaluate(context) ?? 1);
         _iconRotation = (float)(style.Layout.IconRotate.Evaluate(context) ?? 0);
-        _iconPadding = (int)(style.Layout.IconPadding.Evaluate(context) ?? 0);
+        _iconPadding = (int)(float)(style.Layout.IconPadding.Evaluate(context) ?? 0);
 
         _iconWidth = (int)Math.Ceiling(sprite.Width * _iconScale) + _iconPadding * 2;
         _iconHeight = (int)Math.Ceiling(sprite.Height * _iconScale) + _iconPadding * 2;
@@ -166,6 +181,39 @@ public class MapboxIconPointSymbol : MapboxSymbol
             Anchor.BottomRight => new SKPoint(-width, -height),
             _ => throw new NotImplementedException($"Unknown IconAnchor")
         };
+    }
+
+    private string ReplaceWithTags(string text, AttributesTable attributes, EvaluationContext context = null)
+    {
+        var match = regex.Match(text);
+
+        if (!match.Success)
+            return text;
+
+        var val = match.Groups[1].Value;
+
+        if (attributes.Exists(val))
+            return text.Replace($"{{{val}}}", attributes[val].ToString());
+
+        if (context != null && context.Attributes != null && context.Attributes.Exists(val))
+            return text.Replace($"{{{val}}}", context.Attributes[val].ToString());
+
+        // Check, if match starts with name
+        if (val.StartsWith("name"))
+        {
+            // Try to take the localized name
+            var code = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+
+            if (attributes.Exists("name:" + code))
+                return text.Replace($"{{{val}}}", attributes["name:" + code].ToString());
+            if (attributes.Exists("name_" + code))
+                return text.Replace($"{{{val}}}", attributes["name_" + code].ToString());
+
+            // We didn't find a name in the tags, so remove this part
+            return text.Replace($"{{{val}}}", "");
+        }
+
+        return text;
     }
 
     private SKPoint CreateOffset(float[] offset, float scale)
