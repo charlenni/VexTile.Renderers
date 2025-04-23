@@ -93,19 +93,19 @@ public class Renderer
                     RenderAsBackground(renderedTile, context, style, _paints[style]);
                     break;
                 case StyleType.Raster:
-                    if (rawTiles[style.Source] != null)
+                    if (rawTiles.ContainsKey(style.Source) && rawTiles[style.Source] != null)
                     {
                         RenderTileAsRaster(renderedTile, context, (byte[])rawTiles[style.Source], style, _paints[style]);
                     }
                     break;
                 case StyleType.Fill:
-                    if (rawTiles[style.Source] != null)
+                    if (rawTiles.ContainsKey(style.Source) && rawTiles[style.Source] != null)
                     {
                         RenderTilePartAsVectorFill(renderedTile, context, (VectorTile)rawTiles[style.Source], style, _paints[style]);
                     }
                     break;
                 case StyleType.Line:
-                    if (rawTiles[style.Source] != null)
+                    if (rawTiles.ContainsKey(style.Source) && rawTiles[style.Source] != null)
                     {
                         RenderTilePartAsVectorLine(renderedTile, context, (VectorTile)rawTiles[style.Source], style, _paints[style]);
                     }
@@ -131,7 +131,7 @@ public class Renderer
                 continue;
             }
 
-            if (rawTiles[style.Source] != null)
+            if (rawTiles.ContainsKey(style.Source) && rawTiles[style.Source] != null)
             {
                 RenderTilePartAsSymbol(renderedTile, tile, context, (VectorTile)rawTiles[style.Source], style, _paints[style], _symbolFactory);
             }
