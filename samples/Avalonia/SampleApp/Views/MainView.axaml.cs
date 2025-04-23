@@ -14,8 +14,6 @@ namespace SampleApp.Views;
 public partial class MainView : UserControl
 {
     string _path = "files";
-    IRenderedTileSource _tileSource;
-    ILayer _tileLayer;
 
     public MainView()
     {
@@ -25,13 +23,13 @@ public partial class MainView : UserControl
 
         var stream = File.Open(Path.Combine(_path, "osm-liberty.json"), FileMode.Open, FileAccess.Read);
 
-        _tileSource = new MapboxRenderedTileSource(stream);
-        _tileLayer = new RenderedTileLayer(_tileSource)
-        {
-            Style = new RenderedTileStyle()
-        };
+        var tileSource = new MapboxRenderedTileSource(stream);
+        var tileLayer = new RenderedTileLayer(tileSource);
+        var symbolsLayer = new RenderedSymbolsLayer(tileSource);
 
-        MapControl.Map.Layers.Add(_tileLayer);
+        MapControl.Map.Layers.Add(tileLayer);
+        MapControl.Map.Layers.Add(symbolsLayer);
+
         MapControl.Map.Navigator.RotationLock = false;
 
         //MapControl.Map.Navigator.RotateTo(0);
