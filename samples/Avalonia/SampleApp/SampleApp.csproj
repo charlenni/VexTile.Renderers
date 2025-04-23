@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\..\files\osm-liberty.json" Link="files\osm-liberty.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="..\..\..\files\sprites\osm-liberty.json" Link="files\sprites\osm-liberty.json" />
+    <EmbeddedResource Include="..\..\..\files\sprites\osm-liberty.png" Link="files\sprites\osm-liberty.png" />
+    <EmbeddedResource Include="..\..\..\files\sprites\osm-liberty@2x.json" Link="files\sprites\osm-liberty%402x.json" />
+    <EmbeddedResource Include="..\..\..\files\sprites\osm-liberty@2x.png" Link="files\sprites\osm-liberty%402x.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Diagnostics" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Mapsui.Avalonia" />
+    <PackageReference Include="sqlite-net-pcl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\source\controls\VextTile.Control.Mapsui\VextTile.Control.Mapsui.csproj" />
+    <ProjectReference Include="..\..\..\source\renderers\VexTile.Renderer.Default\VexTile.Renderer.Default.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="files\sprites\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\files\LICENSE.md" Link="files\LICENSE.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\files\natural_earth_2_shaded_relief.raster.mbtiles" Link="files\natural_earth_2_shaded_relief.raster.mbtiles">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\files\zurich.mbtiles" Link="files\zurich.mbtiles">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
