@@ -9,6 +9,7 @@ using Mapsui.Tiling.Fetcher;
 using Mapsui.Tiling.Rendering;
 using Mapsui.Tiling.Utilities;
 using System.ComponentModel;
+using VexTile.Renderer.Common;
 
 namespace VextTile.Control.Mapsui;
 
@@ -40,7 +41,7 @@ public class RenderedTileLayer : BaseLayer, IAsyncDataFetcher, IDisposable
     // ReSharper disable once UnusedParameter.Local // Is public and won't break this now
     public RenderedTileLayer(IRenderedTileSource tileSource, int minTiles = 200, int maxTiles = 300,
         IDataFetchStrategy? dataFetchStrategy = null, IRenderFetchStrategy? renderFetchStrategy = null,
-        int minExtraTiles = -1, int maxExtraTiles = -1, Func<TileInfo, Task<IFeature?>>? fetchTileAsFeature = null)
+        int minExtraTiles = -1, int maxExtraTiles = -1, Func<TileInfo, Task<IFeature?>>? fetchTileAsFeature = null, TileInformation tileInformation = null)
     {
         _tileSource = tileSource ?? throw new ArgumentException($"{tileSource} can not null");
         MemoryCache = new MemoryCache<IFeature?>(minTiles, maxTiles);
@@ -55,7 +56,7 @@ public class RenderedTileLayer : BaseLayer, IAsyncDataFetcher, IDisposable
         _tileFetchDispatcher = new TileFetchDispatcher(MemoryCache, _tileSource.Schema, fetchTileAsFeature ?? ToFeatureAsync, dataFetchStrategy);
         _tileFetchDispatcher.DataChanged += TileFetchDispatcherOnDataChanged;
         _tileFetchDispatcher.PropertyChanged += TileFetchDispatcherOnPropertyChanged;
-        Style = new RenderedTileStyle();
+        Style = new RenderedTileStyle(tileInformation);
     }
 
     /// <summary>
