@@ -1,4 +1,5 @@
-﻿using Mapsui;
+﻿using ExCSS;
+using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Logging;
@@ -11,6 +12,11 @@ namespace VextTile.Control.Mapsui;
 
 public class RenderedTileStyleRenderer : ISkiaStyleRenderer
 {
+    SKRect _tileRect = new SKRect(0, 0, 512, 512);
+    SKPoint _tileInformationText = new SKPoint(20, 20);
+    SKFont _tileInformationFont = new SKFont(SKTypeface.Default, 16);
+    SKPaint _tileInformationPaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeWidth = 2, Color = SKColors.Red };
+
     public bool Draw(SKCanvas canvas, Viewport viewport, ILayer layer, IFeature feature, IStyle style, RenderService renderService, long iteration)
     {
         try
@@ -23,7 +29,7 @@ public class RenderedTileStyleRenderer : ISkiaStyleRenderer
 
             var opacity = (float)(layer.Opacity * style.Opacity);
 
-            if (style is not RenderedTileStyle)
+            if (style is not RenderedTileStyle renderedTileStyle)
                 throw new ArgumentException("Excepted a RenderedTileStyle in the RenderedTileStyleRenderer");
 
             var extent = feature.Extent;
@@ -70,10 +76,27 @@ public class RenderedTileStyleRenderer : ISkiaStyleRenderer
                 }
 
                 canvas.SetMatrix(matrix);
+                canvas.ClipRect(_tileRect);
 
                 foreach (var pair in renderedTile.RenderedLayers)
                 {
                     pair.Value.Draw(canvas, context);
+                }
+
+                if (renderedTileStyle.TileInformation != null)
+                {
+                    _tileInformationPaint.Color = renderedTileStyle.TileInformation.Color;
+
+                    if (renderedTileStyle.TileInformation.Border)
+                    {
+                        _tileInformationPaint.StrokeWidth = renderedTileStyle.TileInformation.BorderSize;
+                        canvas.DrawRect(_tileRect, _tileInformationPaint);
+                    }
+                    if (renderedTileStyle.TileInformation.Text)
+                    {
+                        _tileInformationFont.Size = renderedTileStyle.TileInformation.TextSize;
+                        canvas.DrawText($"Tile {renderedTile.Tile.ToString()}", _tileInformationText, SKTextAlign.Left, _tileInformationFont, _tileInformationPaint);
+                    }
                 }
             }
 
