@@ -13,7 +13,7 @@ namespace VextTile.Control.Mapsui;
 public class RenderedTileStyleRenderer : ISkiaStyleRenderer
 {
     SKRect _tileRect = new SKRect(0, 0, 512, 512);
-    SKPoint _tileInformationText = new SKPoint(20, 20);
+    SKPoint _tileInformationText = new SKPoint(20, 40);
     SKFont _tileInformationFont = new SKFont(SKTypeface.Default, 16);
     SKPaint _tileInformationPaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeWidth = 2, Color = SKColors.Red };
 
@@ -60,20 +60,14 @@ public class RenderedTileStyleRenderer : ISkiaStyleRenderer
             }
             else
             {
-                var destination = WorldToScreen(viewport, extent);
+                var destination = RoundToPixel(WorldToScreen(viewport, extent));
 
                 var scaleX = destination.Width / 512;
                 var scaleY = destination.Height / 512;
 
-                SKMatrix matrix;
-                if (scaleX == 1 && scaleY == 1)
-                {
-                    matrix = SKMatrix.CreateTranslation(destination.Left, destination.Top);
-                }
-                else
-                {
-                    matrix = SKMatrix.CreateScaleTranslation(scaleX, scaleY, destination.Left, destination.Top);
-                }
+                var matrix = canvas.TotalMatrix
+                    .PreConcat(SKMatrix.CreateTranslation(destination.Left, destination.Top))
+                    .PreConcat(SKMatrix.CreateScale(scaleX, scaleY));
 
                 canvas.SetMatrix(matrix);
                 canvas.ClipRect(_tileRect);

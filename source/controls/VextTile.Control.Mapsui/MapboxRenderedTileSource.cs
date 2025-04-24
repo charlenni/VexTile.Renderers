@@ -21,7 +21,7 @@ public class MapboxRenderedTileSource : IRenderedTileSource
 
         _renderer = new Renderer(mapboxStyleFile.Sources.Select(s => (VexTile.Common.Interfaces.ITileSource)s.Value), mapboxStyleFile.Layers, new MapboxPaintFactory(mapboxStyleFile.Sprites), new MapboxSymbolFactory(mapboxStyleFile.Sprites));
 
-        Schema = new GlobalSphericalMercator("pbf", YAxis.OSM, Enumerable.Range(minZoom, maxZoom));
+        Schema = new GlobalSphericalMercator512(YAxis.OSM, minZoom, maxZoom);
         Name = mapboxStyleFile.Name;
         Attribution = new Attribution(string.Empty);
     }
