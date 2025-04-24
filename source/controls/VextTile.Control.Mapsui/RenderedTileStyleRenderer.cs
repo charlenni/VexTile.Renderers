@@ -2,6 +2,7 @@
 using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Logging;
+using Mapsui.Manipulations;
 using Mapsui.Rendering.Skia.Cache;
 using Mapsui.Rendering.Skia.SkiaStyles;
 using Mapsui.Styles;
@@ -36,61 +37,21 @@ public class RenderedTileStyleRenderer : ISkiaStyleRenderer
             if (extent == null)
                 return false;
 
-            var context = new VexTile.Common.Primitives.EvaluationContext(ResolutionToZoomLevel(viewport.Resolution));
-
             canvas.Save();
 
-            if (viewport.IsRotated())
+            var scale = CreateMatrix(canvas, viewport, extent);
+            var context = new VexTile.Common.Primitives.EvaluationContext(ResolutionToZoomLevel(viewport.Resolution), 1f / scale, (float)viewport.Rotation);
+
+            canvas.ClipRect(_tileRect);
+
+            foreach (var pair in renderedTile.RenderedLayers)
             {
-                var priorMatrix = canvas.TotalMatrix;
-
-                var matrix = CreateRotationMatrix(viewport, extent, priorMatrix);
-
-                canvas.SetMatrix(matrix);
-
-                var destination = new SKRect(0.0f, 0.0f, (float)extent.Width, (float)extent.Height);
-
-                foreach (var pair in renderedTile.RenderedLayers)
-                {
-                    pair.Value.Draw(canvas, context);
-                }
-
-                canvas.SetMatrix(priorMatrix);
+                pair.Value.Draw(canvas, context);
             }
-            else
+
+            if (renderedTileStyle.TileInformation != null)
             {
-                var destination = RoundToPixel(WorldToScreen(viewport, extent));
-
-                var scaleX = destination.Width / 512;
-                var scaleY = destination.Height / 512;
-
-                var matrix = canvas.TotalMatrix
-                    .PreConcat(SKMatrix.CreateTranslation(destination.Left, destination.Top))
-                    .PreConcat(SKMatrix.CreateScale(scaleX, scaleY));
-
-                canvas.SetMatrix(matrix);
-                canvas.ClipRect(_tileRect);
-
-                foreach (var pair in renderedTile.RenderedLayers)
-                {
-                    pair.Value.Draw(canvas, context);
-                }
-
-                if (renderedTileStyle.TileInformation != null)
-                {
-                    _tileInformationPaint.Color = renderedTileStyle.TileInformation.Color;
-
-                    if (renderedTileStyle.TileInformation.Border)
-                    {
-                        _tileInformationPaint.StrokeWidth = renderedTileStyle.TileInformation.BorderSize;
-                        canvas.DrawRect(_tileRect, _tileInformationPaint);
-                    }
-                    if (renderedTileStyle.TileInformation.Text)
-                    {
-                        _tileInformationFont.Size = renderedTileStyle.TileInformation.TextSize;
-                        canvas.DrawText($"Tile {renderedTile.Tile.ToString()}", _tileInformationText, SKTextAlign.Left, _tileInformationFont, _tileInformationPaint);
-                    }
-                }
+                DrawTileInformation(canvas, renderedTile, renderedTileStyle);
             }
 
             canvas.Restore();
@@ -103,42 +64,45 @@ public class RenderedTileStyleRenderer : ISkiaStyleRenderer
         return true;
     }
 
-    private static SKMatrix CreateRotationMatrix(Viewport viewport, MRect rect, SKMatrix priorMatrix)
+    private float CreateMatrix(SKCanvas canvas, Viewport viewport, MRect extent)
     {
-        // The front-end sets up the canvas with a matrix based on screen scaling (e.g. retina).
-        // We need to retain that effect by combining our matrix with the incoming matrix.
+        var destinationTopLeft = viewport.WorldToScreen(extent.Left, extent.Top);
+        var destinationTopRight = viewport.WorldToScreen(extent.Right, extent.Top);
 
-        // We'll create four matrices in addition to the incoming matrix. They perform the
-        // zoom scale, focal point offset, user rotation and finally, centering in the screen.
+        var dx = destinationTopRight.X - destinationTopLeft.X;
+        var dy = destinationTopRight.Y - destinationTopLeft.Y;
 
-        var userRotation = SKMatrix.CreateRotationDegrees((float)viewport.Rotation);
-        var focalPointOffset = SKMatrix.CreateTranslation(
-            (float)(rect.Left - viewport.CenterX),
-            (float)(viewport.CenterY - rect.Top));
-        var zoomScale = SKMatrix.CreateScale((float)(1.0 / viewport.Resolution), (float)(1.0 / viewport.Resolution));
-        var centerInScreen = SKMatrix.CreateTranslation((float)(viewport.Width / 2.0), (float)(viewport.Height / 2.0));
+        var scale = (float)Math.Sqrt(dx * dx + dy * dy) / 512f;
 
-        // We'll concatenate them like so: incomingMatrix * centerInScreen * userRotation * zoomScale * focalPointOffset
+        canvas.Translate((float)destinationTopLeft.X, (float)destinationTopLeft.Y);
+        if (viewport.IsRotated())
+            canvas.RotateDegrees((float)viewport.Rotation);
+        canvas.Scale(scale);
 
-        var matrix = SKMatrix.Concat(zoomScale, focalPointOffset);
-        matrix = SKMatrix.Concat(userRotation, matrix);
-        matrix = SKMatrix.Concat(centerInScreen, matrix);
-        matrix = SKMatrix.Concat(priorMatrix, matrix);
-
-        return matrix;
+        return scale;
     }
 
-    private static SKRect WorldToScreen(Viewport viewport, MRect rect)
+    private void DrawTileInformation(SKCanvas canvas, VexTile.Renderer.Common.Interfaces.IRenderedTile renderedTile, RenderedTileStyle renderedTileStyle)
     {
-        var first = viewport.WorldToScreen(rect.Min.X, rect.Min.Y);
-        var second = viewport.WorldToScreen(rect.Max.X, rect.Max.Y);
-        return new SKRect
-        (
-            (float)Math.Min(first.X, second.X),
-            (float)Math.Min(first.Y, second.Y),
-            (float)Math.Max(first.X, second.X),
-            (float)Math.Max(first.Y, second.Y)
-        );
+        _tileInformationPaint.Color = renderedTileStyle.TileInformation.Color;
+
+        if (renderedTileStyle.TileInformation.Border)
+        {
+            _tileInformationPaint.StrokeWidth = renderedTileStyle.TileInformation.BorderSize;
+            canvas.DrawRect(_tileRect, _tileInformationPaint);
+        }
+        if (renderedTileStyle.TileInformation.Text)
+        {
+            _tileInformationFont.Size = renderedTileStyle.TileInformation.TextSize;
+            canvas.DrawText($"Tile {renderedTile.Tile.ToString()}", _tileInformationText, SKTextAlign.Left, _tileInformationFont, _tileInformationPaint);
+        }
+    }
+
+    private static MPoint RoundToPixel(ScreenPosition point)
+    {
+        return new MPoint(
+            (float)Math.Round(point.X),
+            (float)Math.Round(point.Y));
     }
 
     private static SKRect RoundToPixel(SKRect boundingBox)
