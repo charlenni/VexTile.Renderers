@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Mapsui.Rendering.Skia;
 using Mapsui.Tiling;
+using System;
 using System.IO;
 using VexTile.Renderer.Common;
 using VextTile.Control.Mapsui;
@@ -24,15 +25,20 @@ public partial class MainView : UserControl
         var tileLayer = new RenderedTileLayer(tileSource, tileInformation: new TileInformation { Border = true, Text = true });
         var symbolsLayer = new RenderedSymbolsLayer(tileSource);
 
+        MapControl.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
         MapControl.Map.Layers.Add(tileLayer);
         MapControl.Map.Layers.Add(symbolsLayer);
 
         MapControl.Map.Navigator.RotationLock = false;
+    }
 
-        //MapControl.Map.Navigator.RotateTo(0);
-        MapControl.Map.RefreshData();
-
-        var rotationSlider = RotationSlider.GetObservable(Slider.ValueProperty);
-        //rotationSlider.Subscribe(value => { System.Diagnostics.Debug.WriteLine($"Rotation: {value}"); MapControl.Map.Navigator.RotateTo(value); }); 
+    private void ButtonRotate_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var rotationSliderObservable = RotationSlider.GetObservable(Slider.ValueProperty);
+        rotationSliderObservable.Subscribe(value =>
+        {
+            System.Diagnostics.Debug.WriteLine($"Rotation: {value}");
+            MapControl.Map.Navigator.RotateTo(value);
+        });
     }
 }
