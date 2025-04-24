@@ -24,7 +24,6 @@ public partial class MainView : UserControl
         var tileLayer = new RenderedTileLayer(tileSource, tileInformation: new TileInformation { Border = true, Text = true });
         var symbolsLayer = new RenderedSymbolsLayer(tileSource);
 
-        MapControl.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
         MapControl.Map.Layers.Add(tileLayer);
         MapControl.Map.Layers.Add(symbolsLayer);
 
