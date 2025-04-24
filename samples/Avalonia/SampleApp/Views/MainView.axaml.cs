@@ -37,7 +37,6 @@ public partial class MainView : UserControl
         var rotationSliderObservable = RotationSlider.GetObservable(Slider.ValueProperty);
         rotationSliderObservable.Subscribe(value =>
         {
-            System.Diagnostics.Debug.WriteLine($"Rotation: {value}");
             MapControl.Map.Navigator.RotateTo(value);
         });
     }
