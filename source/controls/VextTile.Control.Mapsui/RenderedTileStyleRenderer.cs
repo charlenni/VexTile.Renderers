@@ -85,14 +85,17 @@ public class RenderedTileStyleRenderer : ISkiaStyleRenderer
         }
         else
         {
-            var destination = RoundToPixel(viewport.WorldToScreen(extent));
+            var destination = viewport.WorldToScreen(extent);
 
-            scale = destination.Width / 512;
+            var scaleX = (float)(destination.Width / 512f);
+            var scaleY = (float)(destination.Height / 512f);
 
-            canvas.Translate((float)destination.Left, (float)destination.Top);
+            scale = (float)((scaleX + scaleY) / 2.0);
+
+            canvas.Translate((float)Math.Round(destination.Left), (float)Math.Round(destination.Bottom));
             if (viewport.IsRotated())
                 canvas.RotateDegrees((float)viewport.Rotation);
-            canvas.Scale(scale);
+            canvas.Scale(scaleX, scaleY);
         }
 
         return scale;
