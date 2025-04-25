@@ -37,6 +37,6 @@ public partial class MainView : UserControl
             MapControl.Map.Navigator.RotateTo(value);
         });
 
-        MapControl.Map.Navigator.CenterOnAndZoomTo(new(0, 0), 1000);
+        MapControl.Map.Navigator.CenterOnAndZoomTo(new(0, 0), Math.PI * 6378137 / 512);
     }
 }
