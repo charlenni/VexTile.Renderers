@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using VexTile.Renderer.Common;
 using VextTile.Control.Mapsui;
+using VextTile.Control.Mapsui.Extensions;
 
 namespace SampleApp.Views;
 
@@ -37,6 +38,6 @@ public partial class MainView : UserControl
             MapControl.Map.Navigator.RotateTo(value);
         });
 
-        MapControl.Map.Navigator.CenterOnAndZoomTo(new(0, 0), Math.PI * 6378137 / 512);
+        MapControl.Map.Navigator.CenterOnAndZoomTo(new(0, 0), 2.ToResolution());
     }
 }
