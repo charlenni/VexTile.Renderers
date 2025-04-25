@@ -29,7 +29,7 @@
                     MinHeight="30" HorizontalAlignment="Stretch">
 				<RelativePanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 					<TextBlock Text="{Binding Rotation}" TextAlignment="Center" Width="{Binding #RotationSlider.Width}" RelativePanel.AlignBottomWithPanel="True" />
-					<Slider x:Name="RotationSlider" Value="{Binding Rotation}" MinWidth="180" Minimum="0" Maximum="360" Padding="10,0" RelativePanel.AlignBottomWithPanel="True" />
+					<Slider x:Name="RotationSlider" Value="{Binding Rotation, Mode=TwoWay}" MinWidth="180" Minimum="0" Maximum="360" Padding="10,0" RelativePanel.AlignBottomWithPanel="True" />
 				</RelativePanel>
 			</Border>
 		</Grid>
