@@ -141,7 +141,6 @@ public class RenderedTileLayer : BaseLayer, IAsyncDataFetcher, IDisposable
     private async Task<IFeature?> ToFeatureAsync(TileInfo tileInfo)
     {
         var task = await _tileSource.GetTileAsync(tileInfo);
-        System.Diagnostics.Debug.WriteLine($"Load tile {tileInfo.Index.Col}x-{tileInfo.Index.Row}y@{tileInfo.Index.Level}z");
         return task;
     }
 }
