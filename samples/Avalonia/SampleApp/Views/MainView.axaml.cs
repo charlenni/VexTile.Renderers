@@ -25,19 +25,18 @@ public partial class MainView : UserControl
         var tileLayer = new RenderedTileLayer(tileSource, tileInformation: new TileInformation { Border = false, Text = true });
         var symbolsLayer = new RenderedSymbolsLayer(tileSource);
 
-        MapControl.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
+        //MapControl.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
         MapControl.Map.Layers.Add(tileLayer);
         MapControl.Map.Layers.Add(symbolsLayer);
 
         MapControl.Map.Navigator.RotationLock = false;
-    }
 
-    private void ButtonRotate_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
         var rotationSliderObservable = RotationSlider.GetObservable(Slider.ValueProperty);
         rotationSliderObservable.Subscribe(value =>
         {
             MapControl.Map.Navigator.RotateTo(value);
         });
+
+        MapControl.Map.Navigator.CenterOnAndZoomTo(new(0, 0), 1000);
     }
 }

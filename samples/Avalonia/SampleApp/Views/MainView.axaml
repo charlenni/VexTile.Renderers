@@ -28,7 +28,6 @@
 			<Border Grid.Column="0" BorderBrush="White" Opacity="0.65" BorderThickness="6" MinWidth="140"
                     MinHeight="30" HorizontalAlignment="Stretch">
 				<RelativePanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-					<Button x:Name="ButtonRotate" Content="Start Rotate" Click="ButtonRotate_Click" />
 					<TextBlock Text="{Binding Rotation}" TextAlignment="Center" Width="{Binding #RotationSlider.Width}" RelativePanel.AlignBottomWithPanel="True" />
 					<Slider x:Name="RotationSlider" Value="{Binding Rotation}" MinWidth="180" Minimum="0" Maximum="360" Padding="10,0" RelativePanel.AlignBottomWithPanel="True" />
 				</RelativePanel>
