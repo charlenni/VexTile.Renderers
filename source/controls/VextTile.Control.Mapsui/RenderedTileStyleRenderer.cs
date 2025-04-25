@@ -66,18 +66,34 @@ public class RenderedTileStyleRenderer : ISkiaStyleRenderer
 
     private float CreateMatrix(SKCanvas canvas, Viewport viewport, MRect extent)
     {
-        var destinationTopLeft = viewport.WorldToScreen(extent.Left, extent.Top);
-        var destinationTopRight = viewport.WorldToScreen(extent.Right, extent.Top);
+        float scale = 1.0f;
 
-        var dx = destinationTopRight.X - destinationTopLeft.X;
-        var dy = destinationTopRight.Y - destinationTopLeft.Y;
+        if (viewport.IsRotated() && viewport.Rotation != 0.0)
+        {
+            var destinationTopLeft = viewport.WorldToScreen(extent.Left, extent.Top);
+            var destinationTopRight = viewport.WorldToScreen(extent.Right, extent.Top);
 
-        var scale = (float)Math.Sqrt(dx * dx + dy * dy) / 512f;
+            var dx = destinationTopRight.X - destinationTopLeft.X;
+            var dy = destinationTopRight.Y - destinationTopLeft.Y;
 
-        canvas.Translate((float)destinationTopLeft.X, (float)destinationTopLeft.Y);
-        if (viewport.IsRotated())
-            canvas.RotateDegrees((float)viewport.Rotation);
-        canvas.Scale(scale);
+            scale = (float)Math.Sqrt(dx * dx + dy * dy) / 512f;
+
+            canvas.Translate((float)destinationTopLeft.X, (float)destinationTopLeft.Y);
+            if (viewport.IsRotated())
+                canvas.RotateDegrees((float)viewport.Rotation);
+            canvas.Scale(scale);
+        }
+        else
+        {
+            var destination = RoundToPixel(viewport.WorldToScreen(extent));
+
+            scale = destination.Width / 512;
+
+            canvas.Translate((float)destination.Left, (float)destination.Top);
+            if (viewport.IsRotated())
+                canvas.RotateDegrees((float)viewport.Rotation);
+            canvas.Scale(scale);
+        }
 
         return scale;
     }
@@ -105,7 +121,7 @@ public class RenderedTileStyleRenderer : ISkiaStyleRenderer
             (float)Math.Round(point.Y));
     }
 
-    private static SKRect RoundToPixel(SKRect boundingBox)
+    private static SKRect RoundToPixel(MRect boundingBox)
     {
         return new SKRect(
             (float)Math.Round(boundingBox.Left),
