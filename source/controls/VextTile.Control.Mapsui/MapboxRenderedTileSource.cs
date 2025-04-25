@@ -35,6 +35,8 @@ public class MapboxRenderedTileSource : IRenderedTileSource
     public async Task<IFeature?> GetTileAsync(TileInfo tileInfo)
     {
         var renderedTile = await _renderer.Render(tileInfo.ToTile());
+        if (renderedTile == null)
+            return null;
         var feature = new RenderedTileFeature(renderedTile);
         return feature;
     }

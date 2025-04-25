@@ -45,7 +45,7 @@ public class Renderer
         }
     }
 
-    public async Task<IRenderedTile> Render(Tile tile)
+    public async Task<IRenderedTile?> Render(Tile tile)
     {
         var rawTiles = new Dictionary<string, object>();
 
@@ -76,8 +76,15 @@ public class Renderer
             }
         }
 
+        if (rawTiles.Count() == 0)
+        {
+            // We have no tile information, so don't render the tile
+            return null;
+        }
+
         var renderedTile = new RenderedTile(tile);
         var context = new EvaluationContext(tile.Zoom);
+        var hasContent = false;
 
         // Create rendered tile style after style
         foreach (var style in _styles)
@@ -96,18 +103,21 @@ public class Renderer
                     if (rawTiles.ContainsKey(style.Source) && rawTiles[style.Source] != null)
                     {
                         RenderTileAsRaster(renderedTile, context, (byte[])rawTiles[style.Source], style, _paints[style]);
+                        hasContent = true;
                     }
                     break;
                 case StyleType.Fill:
                     if (rawTiles.ContainsKey(style.Source) && rawTiles[style.Source] != null)
                     {
                         RenderTilePartAsVectorFill(renderedTile, context, (VectorTile)rawTiles[style.Source], style, _paints[style]);
+                        hasContent = true;
                     }
                     break;
                 case StyleType.Line:
                     if (rawTiles.ContainsKey(style.Source) && rawTiles[style.Source] != null)
                     {
                         RenderTilePartAsVectorLine(renderedTile, context, (VectorTile)rawTiles[style.Source], style, _paints[style]);
+                        hasContent = true;
                     }
                     break;
                 case StyleType.Symbol:
@@ -134,10 +144,12 @@ public class Renderer
             if (rawTiles.ContainsKey(style.Source) && rawTiles[style.Source] != null)
             {
                 RenderTilePartAsSymbol(renderedTile, tile, context, (VectorTile)rawTiles[style.Source], style, _paints[style], _symbolFactory);
+                hasContent = true;
             }
         }
 
-        return renderedTile;
+        // Only return rendered tile when it contains more than background
+        return hasContent ? renderedTile : null;
     }
 
     private static void RenderAsBackground(IRenderedTile renderedTile, EvaluationContext context, ITileStyle style, IPaint paint)
