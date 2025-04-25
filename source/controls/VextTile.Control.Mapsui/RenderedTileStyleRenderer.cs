@@ -92,7 +92,7 @@ public class RenderedTileStyleRenderer : ISkiaStyleRenderer
 
             scale = (float)((scaleX + scaleY) / 2.0);
 
-            canvas.Translate((float)Math.Round(destination.Left), (float)Math.Round(destination.Bottom));
+            canvas.Translate((float)destination.Left, (float)destination.Bottom);
             if (viewport.IsRotated())
                 canvas.RotateDegrees((float)viewport.Rotation);
             canvas.Scale(scaleX, scaleY);
